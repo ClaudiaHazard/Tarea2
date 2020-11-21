@@ -1,0 +1,43 @@
+syntax = "proto3";
+package connection;
+
+option go_package = "github.com/example/path/gen;connection";
+
+message Chunk {
+    bytes chunk = 1;
+    int nChunk = 2;
+    int idArchivo = 3;
+}
+
+message IdArchivo {
+    int idArchivo = 1;
+}
+
+message Message {
+    string message = 1;
+}
+
+message Propuesta {
+    repeated int listaDataNode1 = 1;
+    repeated int listaDataNode2 = 2;
+    repeated int listaDataNode3 = 3;
+}
+
+message Distribucion {
+    repeated int listaDataNode1 = 1;
+    repeated int listaDataNode2 = 2;
+    repeated int listaDataNode3 = 3; 
+}
+
+service MensajeriaService{
+    //Cliente
+    rpc CargaArchivo(Chunk) returns (Message) {}
+    rpc DescargaArchivo(IdArchivo) returns (Chunk) {}
+    //DataNode
+    rpc RecibeChunks(Message) returns (Chunk) {}
+    rpc EnviaPropuesta(Propuesta) returns (Message) {}
+    rpc DistribuyeChunks(Chunk) returns (Message) {}
+    //NameNode
+    rpc RecibePropuesta(Message) returns (Propuesta) {}
+    rpc RecibeDistribucion(Message) returns (Distribucion) {}
+}
