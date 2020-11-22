@@ -5,12 +5,12 @@ option go_package = "github.com/example/path/gen;connection";
 
 message Chunk {
     bytes chunk = 1;
-    int nChunk = 2;
-    int idArchivo = 3;
+    int32 nChunk = 2;
+    int32 idArchivo = 3;
 }
 
 message IdArchivo {
-    int idArchivo = 1;
+    int32 idArchivo = 1;
 }
 
 message Message {
@@ -18,15 +18,15 @@ message Message {
 }
 
 message Propuesta {
-    repeated int listaDataNode1 = 1;
-    repeated int listaDataNode2 = 2;
-    repeated int listaDataNode3 = 3;
+    repeated int32 listaDataNode1 = 1;
+    repeated int32 listaDataNode2 = 2;
+    repeated int32 listaDataNode3 = 3;
 }
 
 message Distribucion {
-    repeated int listaDataNode1 = 1;
-    repeated int listaDataNode2 = 2;
-    repeated int listaDataNode3 = 3; 
+    repeated int32 listaDataNode1 = 1;
+    repeated int32 listaDataNode2 = 2;
+    repeated int32 listaDataNode3 = 3; 
 }
 
 service MensajeriaService{
