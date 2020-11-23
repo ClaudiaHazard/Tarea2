@@ -3,11 +3,11 @@ package main
 import (
 	"fmt"
   	"bufio"         
-    "io/ioutil"
+    //"io/ioutil"
     "math"
     "os"
     "strconv"
-     "trings"
+    "strings"
 )
 
 func main() {
@@ -67,11 +67,11 @@ func main() {
 
 		    var writePosition int64 = 0
 		    parts:=strings.Split(name,".")
-		    for j := uint64(0); j < len(ubic); j++ {
+		    for j := uint64(0); j < 20; j++ { //REEMPLAZAR CUANDO SE TENGA CONEXIÓN
 
 	             //read a chunk
 
-            	fileName := parts[0] + strconv.FormatUint(i, 10)
+            	fileName := parts[0] + strconv.FormatUint(j, 10) //CAMBIAR CUANDO SE TENGA CONEXIÓN
 	            currentChunkFileName := fileName + strconv.FormatUint(j, 10)
 
 	            //CONECTARSE A DATENODE DE ACUERDO A POS DE ARREGLO, Y ABRIRLO
