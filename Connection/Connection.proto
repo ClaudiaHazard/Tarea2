@@ -17,12 +17,6 @@ message Message {
     string message = 1;
 }
 
-message Propuesta {
-    repeated int32 listaDataNode1 = 1;
-    repeated int32 listaDataNode2 = 2;
-    repeated int32 listaDataNode3 = 3;
-}
-
 message Distribucion {
     repeated int32 listaDataNode1 = 1;
     repeated int32 listaDataNode2 = 2;
@@ -32,12 +26,10 @@ message Distribucion {
 service MensajeriaService{
     //Cliente
     rpc CargaArchivo(Chunk) returns (Message) {}
-    rpc DescargaArchivo(IdArchivo) returns (Chunk) {}
-    //DataNode
+    rpc ConsultaUbicacionArchivo(IdArchivo) returns (Distribucion) {}
+    rpc DescargaChunk(IdArchivo) returns (Chunk) {}
+    //DataNode NameNode
     rpc RecibeChunks(Message) returns (Chunk) {}
-    rpc EnviaPropuesta(Propuesta) returns (Message) {}
+    rpc EnviaPropuesta(Distribucion) returns (Message) {}
     rpc DistribuyeChunks(Chunk) returns (Message) {}
-    //NameNode
-    rpc RecibePropuesta(Message) returns (Propuesta) {}
-    rpc RecibeDistribucion(Message) returns (Distribucion) {}
 }
