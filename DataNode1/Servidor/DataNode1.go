@@ -18,10 +18,10 @@ type Server struct {
 	id int
 }
 
-//IP local 10.6.40.161
+//IP local 10.6.40.162
 const (
 	//ipport = "10.6.40.162:50051"
-	ipport = ":50051"
+	ipport = ":50052"
 )
 
 //CargaArchivo carga archivo a un datanode
@@ -46,7 +46,7 @@ func (s *Server) DescargaChunk(ctx context.Context, in *connection.IdArchivo) (*
 func (s *Server) RecibeChunks(ctx context.Context, in *connection.Message) (*connection.Chunk, error) {
 	print(in.Message)
 	print("Se EnviaChunk")
-	return &connection.Chunk{IdArchivo: 1}, nil
+	return &connection.Chunk{IdArchivo: 2}, nil
 }
 
 //EnviaPropuesta en el caso de namenode recibe propuesta de distribucion rechaza o acepta y guarda dicha distribucion, en el caso que venga aceptada solo la guarda.

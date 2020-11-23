@@ -18,19 +18,6 @@ const (
 	ipport = ":50051"
 )
 
-//IniciaCliente inicia conexion cliente
-func IniciaCliente() *grpc.ClientConn {
-	var conn *grpc.ClientConn
-
-	conn, err := grpc.Dial(ipport, grpc.WithInsecure(), grpc.WithBlock())
-
-	if err != nil {
-		log.Fatalf("did not connect: %s", err)
-	}
-	defer conn.Close()
-	return conn
-}
-
 //EsperaChunks espera chunks provenientes de cliente y otro datanode.
 func EsperaChunks(conn *grpc.ClientConn) *connection.Chunk {
 	c := connection.NewMensajeriaServiceClient(conn)
@@ -50,7 +37,7 @@ func EnviaPropuestaDistribuida(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	response, err := c.EnviaPropuesta(ctx, &connection.Propuesta{})
+	response, err := c.EnviaPropuesta(ctx, &connection.Distribucion{})
 
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
@@ -64,7 +51,7 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	response, err := c.EnviaPropuesta(ctx, &connection.Propuesta{})
+	response, err := c.EnviaPropuesta(ctx, &connection.Distribucion{})
 
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
