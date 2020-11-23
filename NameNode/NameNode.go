@@ -25,37 +25,37 @@ const (
 )
 
 //CargaArchivo carga archivo a un datanode
-func (s *Server) CargaArchivo(ctx context.Context, in *connection.Propuesta) (*connection.Message, error) {
+func (s *Server) CargaArchivo(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 
 	return &connection.Message{Message: "Ok"}, nil
 }
 
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
-func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.Propuesta) (*connection.Message, error) {
+func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.IdArchivo) (*connection.Distribucion, error) {
 
-	return &connection.Message{Message: "Ok"}, nil
+	return &connection.Distribucion{}, nil
 }
 
 //DescargaChunk descarga un chunk de alguno de los datanodes
-func (s *Server) DescargaChunk(ctx context.Context, in *connection.Propuesta) (*connection.Message, error) {
+func (s *Server) DescargaChunk(ctx context.Context, in *connection.IdArchivo) (*connection.Chunk, error) {
 
-	return &connection.Message{Message: "Ok"}, nil
+	return &connection.Chunk{}, nil
 }
 
 //RecibeChunks Recibe propuesta de un namenode
-func (s *Server) RecibeChunks(ctx context.Context, in *connection.Propuesta) (*connection.Message, error) {
+func (s *Server) RecibeChunks(ctx context.Context, in *connection.Message) (*connection.Chunk, error) {
 
-	return &connection.Message{Message: "Ok"}, nil
+	return &connection.Chunk{}, nil
 }
 
 //EnviaPropuesta en el caso de namenode recibe propuesta de distribucion rechaza o acepta y guarda dicha distribucion, en el caso que venga aceptada solo la guarda.
-func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Propuesta) (*connection.Message, error) {
+func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
 
 	return &connection.Message{Message: "Ok"}, nil
 }
 
 //DistribuyeChunks distribuye los chunks segun la propuesta aceptada
-func (s *Server) DistribuyeChunks(ctx context.Context, in *connection.Propuesta) (*connection.Message, error) {
+func (s *Server) DistribuyeChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 
 	return &connection.Message{Message: "Ok"}, nil
 }
