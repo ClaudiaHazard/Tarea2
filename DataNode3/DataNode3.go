@@ -15,7 +15,7 @@ var wg sync.WaitGroup
 //IP local 10.6.40.164
 const (
 	//ipport = "10.6.40.161:50051"
-	ipport = ":50051"
+	ipport = "10.6.40.162:50051"
 )
 
 //EsperaChunks espera chunks provenientes de cliente y otro datanode.
@@ -70,7 +70,7 @@ func EnviaChunks(conn *grpc.ClientConn) *connection.Message {
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
 	}
-
+	print(response)
 	return response
 }
 
