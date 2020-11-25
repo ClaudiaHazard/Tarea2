@@ -85,6 +85,6 @@ func main() {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
 
-	go EsperaChunks(conn)
+	EsperaChunks(conn)
 
 }
