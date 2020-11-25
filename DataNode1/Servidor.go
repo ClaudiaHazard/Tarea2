@@ -43,7 +43,7 @@ func (s *Server) DescargaChunk(ctx context.Context, in *connection.NombreLibro) 
 func (s *Server) RecibeChunks(ctx context.Context, in *connection.Message) (*connection.Chunk, error) {
 	print(in.Message)
 	print("Se EnviaChunk")
-	return &connection.Chunk{NombreLibro: 2}, nil
+	return &connection.Chunk{NombreLibro: "2"}, nil
 }
 
 //EnviaPropuesta en el caso de namenode recibe propuesta de distribucion rechaza o acepta y guarda dicha distribucion, en el caso que venga aceptada solo la guarda.
