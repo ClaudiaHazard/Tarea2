@@ -6,7 +6,7 @@ option go_package = "github.com/example/path/gen;connection";
 message Chunk {
     bytes chunk = 1;
     int32 nChunk = 2;
-    int32 idArchivo = 3;
+    string NombreLibro = 3;
 }
 
 message IdArchivo {
