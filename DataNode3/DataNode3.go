@@ -29,7 +29,7 @@ func EsperaChunks(conn *grpc.ClientConn) *connection.Chunk {
 		log.Fatalf("Error al llamar RecibeChunks: %s", err)
 	}
 
-	print(response)
+	print(response.NombreLibro)
 	return response
 }
 
