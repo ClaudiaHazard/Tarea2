@@ -9,8 +9,8 @@ message Chunk {
     string NombreLibro = 3;
 }
 
-message IdArchivo {
-    int32 idArchivo = 1;
+message NombreLibro {
+    int32 NombreLibro = 1;
 }
 
 message Message {
@@ -26,8 +26,8 @@ message Distribucion {
 service MensajeriaService{
     //Cliente
     rpc CargaArchivo(Chunk) returns (Message) {}
-    rpc ConsultaUbicacionArchivo(IdArchivo) returns (Distribucion) {}
-    rpc DescargaChunk(IdArchivo) returns (Chunk) {}
+    rpc ConsultaUbicacionArchivo(NombreLibro) returns (Distribucion) {}
+    rpc DescargaChunk(NombreLibro) returns (Chunk) {}
     //DataNode NameNode
     rpc RecibeChunks(Message) returns (Chunk) {}
     rpc EnviaPropuesta(Distribucion) returns (Message) {}
