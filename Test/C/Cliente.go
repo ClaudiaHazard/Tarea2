@@ -10,12 +10,8 @@ import (
 	"google.golang.org/grpc"
 )
 
-//IP local 10.6.40.162
 const (
-	ipportNameNode  = "10.6.40.161:50051"
-	ipportDataNode1 = "10.6.40.162:50051"
-	ipportDataNode2 = "10.6.40.163:50051"
-	ipportDataNode3 = "10.6.40.164:50051"
+	ipportDataNode1 = ":50051"
 )
 
 //EsperaChunks espera chunks provenientes de cliente y otro datanode.
@@ -80,34 +76,28 @@ func EnviaChunks(conn *grpc.ClientConn) *connection.Message {
 	return response
 }
 
-//Cliente Ejecucion de Cliente para DataNode
-func Cliente() {
+//CreaChunks crea chunks de un libro.
+func CreaChunks() {
+
+}
+
+//ArmaChunks arma archivo desde un arreglo de chunks
+func ArmaChunks() {
+
+}
+
+//Ejecucion de Clientes
+func main() {
 	fmt.Println("Hello there!")
 
-	var connNN *grpc.ClientConn
-	var connDN2 *grpc.ClientConn
-	var connDN3 *grpc.ClientConn
+	var connDN1 *grpc.ClientConn
 
-	//Se crea la conexion con el servidor Logistica
-	connNN, err := grpc.Dial(ipportNameNode, grpc.WithInsecure(), grpc.WithBlock())
-	connDN2, err2 := grpc.Dial(ipportDataNode2, grpc.WithInsecure(), grpc.WithBlock())
-	connDN3, err3 := grpc.Dial(ipportDataNode2, grpc.WithInsecure(), grpc.WithBlock())
+	//Se crea la conexion con el servidor DN1
+	connDN1, err := grpc.Dial(ipportDataNode1, grpc.WithInsecure(), grpc.WithBlock())
 
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
 
-	if err2 != nil {
-		log.Fatalf("No se pudo conectar: %s", err)
-	}
-
-	if err3 != nil {
-		log.Fatalf("No se pudo conectar: %s", err)
-	}
-
-	EsperaChunks(connNN)
-	EsperaChunks(connDN2)
-	EsperaChunks(connDN3)
-
-	wg.Done()
+	EsperaChunks(connDN1)
 }

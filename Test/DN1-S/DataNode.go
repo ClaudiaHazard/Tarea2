@@ -15,10 +15,8 @@ type Server struct {
 	id int
 }
 
-//IP local 10.6.40.161
 const (
-	ipportListen = "10.6.40.161:50051"
-	//ipportListen = ":50051"
+	ipportListen = ":50051"
 )
 
 //CargaArchivo carga archivo a un datanode
@@ -58,8 +56,8 @@ func (s *Server) DistribuyeChunks(ctx context.Context, in *connection.Chunk) (*c
 	return &connection.Message{Message: "Ok"}, nil
 }
 
-//NameNode ejecucion de servidor para NameNode
-func NameNode() {
+//Servidor ejecucion de servidor para DataNode
+func main() {
 	fmt.Println("Hello there!")
 
 	// Escucha las conexiones grpc
@@ -81,6 +79,4 @@ func NameNode() {
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve gRPC server over "+ipportListen+": %v", err)
 	}
-
-	wg.Done()
 }

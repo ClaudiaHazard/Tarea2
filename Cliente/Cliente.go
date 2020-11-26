@@ -157,13 +157,13 @@ func (s *Server) CargaArchivo(ctx context.Context, in *connection.Chunk) (*conne
 }
 
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
-func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.IdArchivo) (*connection.Distribucion, error) {
+func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.NombreLibro) (*connection.Distribucion, error) {
 
 	return &connection.Distribucion{}, nil
 }
 
 //DescargaChunk descarga un chunk de alguno de los datanodes
-func (s *Server) DescargaChunk(ctx context.Context, in *connection.IdArchivo) (*connection.Chunk, error) {
+func (s *Server) DescargaChunk(ctx context.Context, in *connection.NombreLibro) (*connection.Chunk, error) {
 
 	return &connection.Chunk{}, nil
 }
@@ -172,7 +172,7 @@ func (s *Server) DescargaChunk(ctx context.Context, in *connection.IdArchivo) (*
 func (s *Server) RecibeChunks(ctx context.Context, in *connection.Message) (*connection.Chunk, error) {
 	print(in.Message)
 	print("Se EnviaChunk")
-	return &connection.Chunk{IdArchivo: 1}, nil
+	return &connection.Chunk{NombreLibro: "1"}, nil
 }
 
 //EnviaPropuesta en el caso de namenode recibe propuesta de distribucion rechaza o acepta y guarda dicha distribucion, en el caso que venga aceptada solo la guarda.

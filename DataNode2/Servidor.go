@@ -15,9 +15,9 @@ type Server struct {
 	id int
 }
 
-//IP local 10.6.40.161
+//IP local 10.6.40.163
 const (
-	ipportListen = "10.6.40.161:50051"
+	ipportListen = "10.6.40.163:50051"
 	//ipportListen = ":50051"
 )
 
@@ -58,8 +58,8 @@ func (s *Server) DistribuyeChunks(ctx context.Context, in *connection.Chunk) (*c
 	return &connection.Message{Message: "Ok"}, nil
 }
 
-//NameNode ejecucion de servidor para NameNode
-func NameNode() {
+//Servidor ejecucion de servidor para DataNode
+func Servidor() {
 	fmt.Println("Hello there!")
 
 	// Escucha las conexiones grpc

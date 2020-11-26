@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc"
 )
 
-//IP local 10.6.40.162
+//IP local 10.6.40.164
 const (
 	ipportNameNode  = "10.6.40.161:50051"
 	ipportDataNode1 = "10.6.40.162:50051"

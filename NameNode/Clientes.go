@@ -80,16 +80,16 @@ func EnviaChunks(conn *grpc.ClientConn) *connection.Message {
 	return response
 }
 
-//Cliente Ejecucion de Cliente para DataNode
-func Cliente() {
+//Clientes Ejecucion de Clientes
+func Clientes() {
 	fmt.Println("Hello there!")
 
-	var connNN *grpc.ClientConn
+	var connDN1 *grpc.ClientConn
 	var connDN2 *grpc.ClientConn
 	var connDN3 *grpc.ClientConn
 
 	//Se crea la conexion con el servidor Logistica
-	connNN, err := grpc.Dial(ipportNameNode, grpc.WithInsecure(), grpc.WithBlock())
+	connDN1, err := grpc.Dial(ipportDataNode1, grpc.WithInsecure(), grpc.WithBlock())
 	connDN2, err2 := grpc.Dial(ipportDataNode2, grpc.WithInsecure(), grpc.WithBlock())
 	connDN3, err3 := grpc.Dial(ipportDataNode2, grpc.WithInsecure(), grpc.WithBlock())
 
@@ -105,7 +105,7 @@ func Cliente() {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
 
-	EsperaChunks(connNN)
+	EsperaChunks(connDN1)
 	EsperaChunks(connDN2)
 	EsperaChunks(connDN3)
 
