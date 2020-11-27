@@ -10,26 +10,29 @@ message Chunk {
 }
 
 message NombreLibro {
-    int32 NombreLibro = 1;
+    string NombreLibro = 1;
 }
 
 message Message {
     string message = 1;
 }
 
+message DivisionLibro {
+    string NombreLibro = 1;
+    int32 nChunk = 2;
+}
+
 message Distribucion {
-    repeated int32 listaDataNode1 = 1;
-    repeated int32 listaDataNode2 = 2;
-    repeated int32 listaDataNode3 = 3; 
+    string NombreLibro = 1;
+    repeated int32 listaDataNode1 = 2;
+    repeated int32 listaDataNode2 = 3;
+    repeated int32 listaDataNode3 = 4; 
 }
 
 service MensajeriaService{
-    //Cliente
-    rpc CargaArchivo(Chunk) returns (Message) {}
+    rpc EnviaChunks(Chunk) returns (Message) {}
     rpc ConsultaUbicacionArchivo(NombreLibro) returns (Distribucion) {}
-    rpc DescargaChunk(NombreLibro) returns (Chunk) {}
-    //DataNode NameNode
-    rpc RecibeChunks(Message) returns (Chunk) {}
+    rpc DescargaChunk(DivisionLibro) returns (Chunk) {}
     rpc EnviaPropuesta(Distribucion) returns (Message) {}
-    rpc DistribuyeChunks(Chunk) returns (Message) {}
+    rpc EnviaDistribucion(Distribucion) returns (Message) {}
 }
