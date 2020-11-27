@@ -21,10 +21,10 @@ const (
 	//ipportListen = ":50051"
 )
 
-//CargaArchivo carga archivo a un datanode
-func (s *Server) CargaArchivo(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
-
-	return &connection.Message{Message: "Ok"}, nil
+//EnviaChunks Recibe propuesta de un namenode
+func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+	print("Se EnviaChunk")
+	return &connection.Message{Message: "hola"}, nil
 }
 
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
@@ -34,16 +34,9 @@ func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.No
 }
 
 //DescargaChunk descarga un chunk de alguno de los datanodes
-func (s *Server) DescargaChunk(ctx context.Context, in *connection.NombreLibro) (*connection.Chunk, error) {
+func (s *Server) DescargaChunk(ctx context.Context, in *connection.DivisionLibro) (*connection.Chunk, error) {
 
 	return &connection.Chunk{}, nil
-}
-
-//RecibeChunks Recibe propuesta de un namenode
-func (s *Server) RecibeChunks(ctx context.Context, in *connection.Message) (*connection.Chunk, error) {
-	print(in.Message)
-	print("Se EnviaChunk")
-	return &connection.Chunk{NombreLibro: "2"}, nil
 }
 
 //EnviaPropuesta en el caso de namenode recibe propuesta de distribucion rechaza o acepta y guarda dicha distribucion, en el caso que venga aceptada solo la guarda.
@@ -52,8 +45,8 @@ func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion
 	return &connection.Message{Message: "Ok"}, nil
 }
 
-//DistribuyeChunks distribuye los chunks segun la propuesta aceptada
-func (s *Server) DistribuyeChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+//EnviaDistribucion distribuye los chunks segun la propuesta aceptada
+func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
 
 	return &connection.Message{Message: "Ok"}, nil
 }

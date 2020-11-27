@@ -18,21 +18,6 @@ const (
 	ipportDataNode3 = "10.6.40.164:50051"
 )
 
-//EsperaChunks espera chunks provenientes de cliente y otro datanode.
-func EsperaChunks(conn *grpc.ClientConn) *connection.Chunk {
-	c := connection.NewMensajeriaServiceClient(conn)
-	ctx := context.Background()
-
-	response, err := c.RecibeChunks(ctx, &connection.Message{Message: "En espera"})
-
-	if err != nil {
-		log.Fatalf("Error al llamar RecibeChunks: %s", err)
-	}
-
-	print(response.NombreLibro)
-	return response
-}
-
 //EnviaPropuestaDistribuida envia propuesta distribuida
 func EnviaPropuestaDistribuida(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
@@ -69,7 +54,7 @@ func EnviaChunks(conn *grpc.ClientConn) *connection.Message {
 
 	print("EnviaChunks")
 
-	response, err := c.DistribuyeChunks(ctx, &connection.Chunk{})
+	response, err := c.EnviaChunks(ctx, &connection.Chunk{})
 
 	print("EnviaChunks")
 
@@ -105,9 +90,9 @@ func Cliente() {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
 
-	EsperaChunks(connNN)
-	EsperaChunks(connDN2)
-	EsperaChunks(connDN3)
+	EnviaChunks(connNN)
+	EnviaChunks(connDN2)
+	EnviaChunks(connDN3)
 
 	wg.Done()
 }

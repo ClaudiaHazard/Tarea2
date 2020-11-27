@@ -82,13 +82,12 @@ func EnviaChunks(conn *grpc.ClientConn) *connection.Message {
 }
 
 //HaceChunk hace un chunk en base a una parte de un archivo
-
-func HaceChunk(ch []byte ,pos int32, n string) *connection.Chunk{
-	return &connection.Chunk{Chunk:ch,NChunk:pos,NombreLibro:n}//nombre con formato incluido
+func HaceChunk(ch []byte, pos int32, n string) *connection.Chunk {
+	return &connection.Chunk{Chunk: ch, NChunk: pos, NombreLibro: n} //nombre con formato incluido
 }
 
 //CreaChunks crea chunks de un libro.
-func CreaChunks(name string ,  conn1 *grpc.ClientConn) {
+func CreaChunks(name string, conn1 *grpc.ClientConn) {
 
 	//elección de a donde enviar
 	//seed:=rand.Intn(2)
@@ -108,12 +107,12 @@ func CreaChunks(name string ,  conn1 *grpc.ClientConn) {
 		partSize := int(math.Min(fileChunk, float64(fileSize-int64(i*fileChunk))))
 		partBuffer := make([]byte, partSize)
 		file.Read(partBuffer)
-		ch:= HaceChunk(partBuffer,i+1,name)//nombre con formato incluido)
+		ch := HaceChunk(partBuffer, i+1, name) //nombre con formato incluido)
 
 		//ENVÍO A DATANODE USANDO GRPC
 
 		c := connection.NewMensajeriaServiceClient(conn1)
-		response,err3:=c.CargaArchivo(context.Background(),ch)	
+		response, err3 := c.CargaArchivo(context.Background(), ch)
 		if err3 != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -125,7 +124,7 @@ func CreaChunks(name string ,  conn1 *grpc.ClientConn) {
 }
 
 //ArmaChunks arma archivo, luego de solicitar ubicación y obtener donde está cada chunk
-func ArmaChunks(name string ,conn1 *grpc.ClientConn ,connNN *grpc.ClientConn) {
+func ArmaChunks(name string, conn1 *grpc.ClientConn, connNN *grpc.ClientConn) {
 	_, err := os.Create(name)
 
 	if err != nil {
@@ -138,10 +137,10 @@ func ArmaChunks(name string ,conn1 *grpc.ClientConn ,connNN *grpc.ClientConn) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	nl:=&connection.NombreLibro{NombreLibro:name}
+	nl := &connection.NombreLibro{NombreLibro: name}
 	//SOLICITAR UBICACIONES
 	c := connection.NewMensajeriaServiceClient(connNN)
-	ubc ,err2:= c.ConsultaUbicacionArchivo(context.Background(),nl)
+	ubc, err2 := c.ConsultaUbicacionArchivo(context.Background(), nl)
 
 	if err2 != nil {
 		fmt.Println(err)
@@ -155,7 +154,7 @@ func ArmaChunks(name string ,conn1 *grpc.ClientConn ,connNN *grpc.ClientConn) {
 		//CONECTARSE A DATENODE DE ACUERDO A POS DE ARREGLO, Y ABRIRLO
 
 		c2 := connection.NewMensajeriaServiceClient(conn1)
-		newFileChunk ,err3:= c2.DescargaChunk(context.Background(), nl)
+		newFileChunk, err3 := c2.DescargaChunk(context.Background(), nl)
 
 		if err3 != nil {
 			fmt.Println(err)
@@ -169,7 +168,6 @@ func ArmaChunks(name string ,conn1 *grpc.ClientConn ,connNN *grpc.ClientConn) {
 		//chunkBufferBytes := make([]byte, chunkSize)
 		fmt.Println("Appending at position : [", writePosition, "] bytes")
 		writePosition = writePosition + chunkSize
-
 
 		n, err := file.Write(newFileChunk.Chunk)
 		if err != nil {
