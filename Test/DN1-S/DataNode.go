@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"os"
 	"io/ioutil"
+    "bufio"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 	"google.golang.org/grpc"
@@ -23,7 +24,7 @@ const (
 	ipportListen = ":50051"
 )
 
-//EnviaChunks Recibe propuesta de un namenode
+//EnviaChunks cliente/datanode envía chunk a datanode
 func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 	parts:=strings.Split(in.NombreLibro,".")
 	fileName := parts[0]+strconv.Itoa(int(in.NChunk))
@@ -38,7 +39,7 @@ func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connec
 	ioutil.WriteFile(fileName, in.Chunk, os.ModeAppend)
 
 	fmt.Println("Downloaded : ", fileName)	
-	return &connection.Message{Message: "hola"}, nil
+	return &connection.Message{Message: "Descargada\n"}, nil
 }
 
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
@@ -47,10 +48,35 @@ func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.No
 	return &connection.Distribucion{}, nil
 }
 
-//DescargaChunk descarga un chunk de alguno de los datanodes
+//DescargaChunk cliente descarga un chunk de alguno de los datanodes
 func (s *Server) DescargaChunk(ctx context.Context, in *connection.DivisionLibro) (*connection.Chunk, error) {
+	pa:=strings.Split(in.NombreLibro,".")
+	fileopen:=pa[0]+strconv.Itoa(int(in.NChunk))
+    newFileChunk, err := os.Open(fileopen)
 
-	return &connection.Chunk{}, nil
+    if err != nil {
+            fmt.Println(err)
+            os.Exit(1)
+    }
+
+    defer newFileChunk.Close()
+
+    chunkInfo, err := newFileChunk.Stat()
+
+    if err != nil {
+            fmt.Println(err)
+            os.Exit(1)
+    }
+    var chunkSize int64 = chunkInfo.Size()
+    chunkBufferBytes := make([]byte, chunkSize)
+    reader := bufio.NewReader(newFileChunk)
+    _, err = reader.Read(chunkBufferBytes)
+
+    if err != nil {
+            fmt.Println(err)
+            os.Exit(1)
+    }
+	return &connection.Chunk{Chunk: chunkBufferBytes, NChunk:in.NChunk, NombreLibro: in.NombreLibro}, nil
 }
 
 //EnviaPropuesta en el caso de namenode recibe propuesta de distribucion rechaza o acepta y guarda dicha distribucion, en el caso que venga aceptada solo la guarda.
