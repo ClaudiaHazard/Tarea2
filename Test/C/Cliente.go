@@ -61,7 +61,8 @@ func CreaChunks(name string, conn1 *grpc.ClientConn) {
 }
 
 //ArmaChunks arma archivo, luego de solicitar ubicación y obtener donde está cada chunk
-func ArmaChunks(name string, conn1 *grpc.ClientConn, connNN *grpc.ClientConn) {
+//func ArmaChunks(name string, conn1 *grpc.ClientConn, connNN *grpc.ClientConn) {
+func ArmaChunks(name string, conn1 *grpc.ClientConn) {
 	_, err := os.Create(name)
 
 	if err != nil {
@@ -74,19 +75,15 @@ func ArmaChunks(name string, conn1 *grpc.ClientConn, connNN *grpc.ClientConn) {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	nl := &connection.NombreLibro{NombreLibro: name}
+	//nl := &connection.NombreLibro{NombreLibro: name}
 	//SOLICITAR UBICACIONES
-	c := connection.NewMensajeriaServiceClient(connNN)
-	ubc, err2 := c.ConsultaUbicacionArchivo(context.Background(), nl)
+	//c := connection.NewMensajeriaServiceClient(connNN)
+	//ubc, err2 := c.ConsultaUbicacionArchivo(context.Background(), nl)
 
-	if err2 != nil {
-		fmt.Println(err)
-		os.Exit(1)
-	}
 	var writePosition int64 = 0
 	//parts := strings.Split(name, ".")
 	//for j := uint64(0); j < (len(ubc.listaDatanode1)+ len(ubc.listaDatanode2) + len(ubc.listaDatanode3)); j++ { //original
-	for j := int(0); j < len(ubc.ListaDataNode1); j++ { //propuesta
+	for j := int(0); j < 23; j++ { //propuesta
 		//read a chunk
 		//CONECTARSE A DATENODE DE ACUERDO A POS DE ARREGLO, Y ABRIRLO
 		dl := &connection.DivisionLibro{NombreLibro: name,NChunk:int32(j +1)}
@@ -141,9 +138,9 @@ func main() {
 			CreaChunks(na, connDN1)
 			fmt.Println(na," subido")		
 		}else if acc=="descargar"{
-			fmt.Println("Ingrese nombre de archivo a descargarr incluyendo formato (ej:ejemplo.pdf")
+			fmt.Println("Ingrese nombre de archivo a descargar incluyendo formato (ej:ejemplo.pdf")
 			fmt.Scanln(&na)
-			//ArmaChunks(na, connDN1)
+			ArmaChunks(na, connDN1)
 			fmt.Println(na," descargado")				
 		}else{
 			fmt.Println("Opción errónea, por favor volver a ingresar:")
