@@ -5,6 +5,10 @@ import (
 	"fmt"
 	"log"
 	"net"
+	"strings"
+	"strconv"
+	"os"
+	"io/ioutil"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 	"google.golang.org/grpc"
@@ -21,7 +25,19 @@ const (
 
 //EnviaChunks Recibe propuesta de un namenode
 func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
-	print("Se EnviaChunk")
+	parts:=strings.Split(in.NombreLibro,".")
+	fileName := parts[0]+strconv.Itoa(int(in.NChunk))
+	_, err := os.Create(fileName)
+
+	if err != nil {
+	    fmt.Println(err)
+	    os.Exit(1)
+	}
+
+	// write/save buffer to disk
+	ioutil.WriteFile(fileName, in.Chunk, os.ModeAppend)
+
+	fmt.Println("Downloaded : ", fileName)	
 	return &connection.Message{Message: "hola"}, nil
 }
 
