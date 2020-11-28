@@ -19,67 +19,7 @@ const (
 	ipportDataNode1 = ":50051"
 )
 
-//EsperaChunks espera chunks provenientes de cliente y otro datanode.
-func EsperaChunks(conn *grpc.ClientConn) *connection.Chunk {
-	c := connection.NewMensajeriaServiceClient(conn)
-	ctx := context.Background()
 
-	response, err := c.RecibeChunks(ctx, &connection.Message{Message: "En espera"})
-
-	if err != nil {
-		log.Fatalf("Error al llamar RecibeChunks: %s", err)
-	}
-
-	print(response.NombreLibro)
-	return response
-}
-
-//EnviaPropuestaDistribuida envia propuesta distribuida
-func EnviaPropuestaDistribuida(conn *grpc.ClientConn) *connection.Message {
-	c := connection.NewMensajeriaServiceClient(conn)
-	ctx := context.Background()
-
-	response, err := c.EnviaPropuesta(ctx, &connection.Distribucion{})
-
-	if err != nil {
-		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
-	}
-
-	return response
-}
-
-//EnviaPropuestaCentralizada envia propuesta centralizada
-func EnviaPropuestaCentralizada(conn *grpc.ClientConn) *connection.Message {
-	c := connection.NewMensajeriaServiceClient(conn)
-	ctx := context.Background()
-
-	response, err := c.EnviaPropuesta(ctx, &connection.Distribucion{})
-
-	if err != nil {
-		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
-	}
-
-	return response
-}
-
-//EnviaChunks envia chunks con la distribucion que fue aceptada previamente
-func EnviaChunks(conn *grpc.ClientConn) *connection.Message {
-	print("EnviaChunks")
-	c := connection.NewMensajeriaServiceClient(conn)
-	ctx := context.Background()
-
-	print("EnviaChunks")
-
-	response, err := c.DistribuyeChunks(ctx, &connection.Chunk{})
-
-	print("EnviaChunks")
-
-	if err != nil {
-		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
-	}
-
-	return response
-}
 
 //HaceChunk hace un chunk en base a una parte de un archivo
 func HaceChunk(ch []byte, pos int32, n string) *connection.Chunk {
@@ -108,11 +48,8 @@ func CreaChunks(name string, conn1 *grpc.ClientConn) {
 		partBuffer := make([]byte, partSize)
 		file.Read(partBuffer)
 		ch := HaceChunk(partBuffer, i+1, name) //nombre con formato incluido)
-
-		//ENVÍO A DATANODE USANDO GRPC
-
 		c := connection.NewMensajeriaServiceClient(conn1)
-		response, err3 := c.CargaArchivo(context.Background(), ch)
+		response, err3 := c.EnviaChunks(context.Background(), ch)
 		if err3 != nil {
 			fmt.Println(err)
 			os.Exit(1)
@@ -152,9 +89,11 @@ func ArmaChunks(name string, conn1 *grpc.ClientConn, connNN *grpc.ClientConn) {
 	for j := int(0); j < len(ubc.ListaDataNode1); j++ { //propuesta
 		//read a chunk
 		//CONECTARSE A DATENODE DE ACUERDO A POS DE ARREGLO, Y ABRIRLO
+		dl := &connection.DivisionLibro{NombreLibro: name,NChunk:int32(j +1)}
 
 		c2 := connection.NewMensajeriaServiceClient(conn1)
-		newFileChunk, err3 := c2.DescargaChunk(context.Background(), nl)
+		newFileChunk, err3 := c2.DescargaChunk(context.Background(), dl)
+
 
 		if err3 != nil {
 			fmt.Println(err)
@@ -183,8 +122,6 @@ func ArmaChunks(name string, conn1 *grpc.ClientConn, connNN *grpc.ClientConn) {
 
 //Ejecucion de Clientes
 func main() {
-	fmt.Println("Hello there!")
-
 	var connDN1 *grpc.ClientConn
 
 	//Se crea la conexion con el servidor DN1
@@ -193,6 +130,25 @@ func main() {
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
+	for {
+		var acc string
+		var na string
+		fmt.Println("Ingrese acción a realizar (subir o descargar):")
+		fmt.Scanln(&acc)
+		if acc=="subir"{
+			fmt.Println("Ingrese nombre de archivo a subir incluyendo formato (ej:ejemplo.pdf)")
+			fmt.Scanln(&na)
+			CreaChunks(na, connDN1)
+			fmt.Println(na," subido")		
+		}else if acc=="descargar"{
+			fmt.Println("Ingrese nombre de archivo a descargarr incluyendo formato (ej:ejemplo.pdf")
+			fmt.Scanln(&na)
+			//ArmaChunks(na, connDN1)
+			fmt.Println(na," descargado")				
+		}else{
+			fmt.Println("Opción errónea, por favor volver a ingresar:")
+		}
 
-	EsperaChunks(connDN1)
+	}
+
 }
