@@ -74,10 +74,10 @@ func AceptaPropuesta() string {
 	return "NO"
 }
 
-//EnviaChunks Recibe propuesta de un namenode
+//EnviaChunks no es necesaria en el NameNode
 func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
-	print("Se EnviaChunk")
-	return &connection.Message{Message: "hola"}, nil
+
+	return &connection.Message{}, nil
 }
 
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
@@ -86,7 +86,7 @@ func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.No
 	return &connection.Distribucion{NombreLibro: in.NombreLibro, NumeroPar: s.log[in.NombreLibro].cantPar, ListaDataNodesChunk: s.log[in.NombreLibro].chunkpormaquina}, nil
 }
 
-//DescargaChunk descarga un chunk de alguno de los datanodes
+//DescargaChunk no es necesaria en el NameNode
 func (s *Server) DescargaChunk(ctx context.Context, in *connection.DivisionLibro) (*connection.Chunk, error) {
 
 	return &connection.Chunk{}, nil

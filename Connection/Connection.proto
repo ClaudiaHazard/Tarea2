@@ -7,6 +7,7 @@ message Chunk {
     bytes chunk = 1;
     int32 nChunk = 2;
     string NombreLibro = 3;
+    int32 numeroPar = 4;
 }
 
 message NombreLibro {
