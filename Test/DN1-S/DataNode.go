@@ -105,6 +105,18 @@ func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribuc
 	return &connection.Message{Message: "Ok"}, nil
 }
 
+//ConsultaLibrosDisponibles no es utilizada por DataNode
+func (s *Server) ConsultaLibrosDisponibles(ctx context.Context, in *connection.Message) (*connection.Libros, error) {
+
+	return &connection.Libros{}, nil
+}
+
+//ChequeoPing chequea que un nodo no este caido
+func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*connection.Message, error) {
+
+	return &connection.Message{Message: "Disponible?"}, nil
+}
+
 //Servidor ejecucion de servidor para DataNode
 func main() {
 	fmt.Println("Hello there!")

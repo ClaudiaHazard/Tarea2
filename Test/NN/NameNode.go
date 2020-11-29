@@ -108,10 +108,16 @@ func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribuc
 	return &connection.Message{Message: "Ok"}, nil
 }
 
-//ConsultaLibrosDisponibles distribuye los chunks segun la propuesta aceptada
+//ConsultaLibrosDisponibles Cliente downloader consulta libros disponibles
 func (s *Server) ConsultaLibrosDisponibles(ctx context.Context, in *connection.Message) (*connection.Libros, error) {
 
 	return &connection.Libros{LibrosDisponibles: s.librosDisp}, nil
+}
+
+//ChequeoPing chequea que un nodo no este caido
+func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*connection.Message, error) {
+
+	return &connection.Message{Message: "Disponible?"}, nil
 }
 
 //Servidor ejecucion de servidor para NameNode

@@ -27,6 +27,18 @@ func (s *Server) CargaArchivo(ctx context.Context, in *connection.Chunk) (*conne
 	return &connection.Message{Message: "Ok"}, nil
 }
 
+//EnviaDistribucion distribuye los chunks segun la propuesta aceptada
+func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
+
+	return &connection.Message{Message: "Ok"}, nil
+}
+
+//EnviaChunks Recibe propuesta de un namenode
+func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+	print("Se EnviaChunk")
+	return &connection.Message{Message: "hola"}, nil
+}
+
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
 func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.NombreLibro) (*connection.Distribucion, error) {
 
@@ -34,7 +46,7 @@ func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.No
 }
 
 //DescargaChunk descarga un chunk de alguno de los datanodes
-func (s *Server) DescargaChunk(ctx context.Context, in *connection.NombreLibro) (*connection.Chunk, error) {
+func (s *Server) DescargaChunk(ctx context.Context, in *connection.DivisionLibro) (*connection.Chunk, error) {
 
 	return &connection.Chunk{}, nil
 }
@@ -56,6 +68,18 @@ func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion
 func (s *Server) DistribuyeChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 
 	return &connection.Message{Message: "Ok"}, nil
+}
+
+//ConsultaLibrosDisponibles Cliente downloader consulta libros disponibles
+func (s *Server) ConsultaLibrosDisponibles(ctx context.Context, in *connection.Message) (*connection.Libros, error) {
+
+	return &connection.Libros{}, nil
+}
+
+//ChequeoPing chequea que un nodo no este caido
+func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*connection.Message, error) {
+
+	return &connection.Message{Message: "Disponible?"}, nil
 }
 
 //NameNode ejecucion de servidor para NameNode
