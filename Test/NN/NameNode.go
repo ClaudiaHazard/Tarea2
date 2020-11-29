@@ -22,12 +22,13 @@ type book struct {
 
 //Server datos
 type Server struct {
-	id  int
-	mux *sync.Mutex
-	log map[string]book // string es el nombre del libro
+	id         int
+	mux        *sync.Mutex
+	log        map[string]book // string es el nombre del libro
 	ipMaquinas map[int32]string
 }
 
+var csvFile *os.File
 
 const (
 	ipportListen    = ":50051"
@@ -55,9 +56,9 @@ func EditaResigtro(s *Server, NombreLibro string, csvFile *os.File) {
 	csvwriter := csv.NewWriter(csvFile)
 	defer csvwriter.Flush()
 	csvwriter.Write([]string{NombreLibro, strconv.Itoa(int(s.log[NombreLibro].cantPar))})
-	var val string
+	var val []string
 	for index, element := range s.log[NombreLibro].chunkpormaquina {
-	 	val = []string{"Parte_"+strconv.Itoa(len(s.log)+"_"+strconv.Itoa(i+1),s.ipMaquinas[}
+		val = []string{"Parte_" + strconv.Itoa(len(s.log)) + "_" + strconv.Itoa(index+1), s.ipMaquinas[element]}
 		csvwriter.Write(val)
 	}
 
@@ -100,11 +101,15 @@ func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion
 func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
 	defer s.mux.Unlock()
 	s.mux.Lock()
-	chunkpormaquina := []*connection.ListaNChunks{}
-	chunkpormaquina = in.ListaDataNodesChunk
-	s.log[in.NombreLibro] = book{cantPar: in.NumeroPar, chunkpormaquina: chunkpormaquina}
-
+	s.log[in.NombreLibro] = book{cantPar: in.NumeroPar, chunkpormaquina: in.ListaDataNodesChunk}
+	EditaResigtro(s, in.NombreLibro, csvFile)
 	return &connection.Message{Message: "Ok"}, nil
+}
+
+//ConsultaLibrosDisponibles distribuye los chunks segun la propuesta aceptada
+func (s *Server) ConsultaLibrosDisponibles(ctx context.Context, in *connection.Message) (*connection.Libros, error) {
+
+	return &connection.Libros{}, nil
 }
 
 //Servidor ejecucion de servidor para NameNode
@@ -128,7 +133,7 @@ func main() {
 	grpcServer := grpc.NewServer()
 
 	//Crea el archivo de registro Log de NameNode
-	//csvFile = CreaRegistro()
+	csvFile = CreaRegistro()
 
 	fmt.Println("En espera de Informacion Chunks para servidor")
 
