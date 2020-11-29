@@ -28,10 +28,15 @@ message Distribucion {
     repeated int32 listaDataNodesChunk = 3;
 }
 
+message Libros {
+    repeated string librosDisponibles = 1;
+}
+
 service MensajeriaService{
     rpc EnviaChunks(Chunk) returns (Message) {}
     rpc ConsultaUbicacionArchivo(NombreLibro) returns (Distribucion) {}
     rpc DescargaChunk(DivisionLibro) returns (Chunk) {}
     rpc EnviaPropuesta(Distribucion) returns (Message) {}
     rpc EnviaDistribucion(Distribucion) returns (Message) {}
+    rpc ConsultaLibrosDisponibles(Message) returns (Libros) {}
 }

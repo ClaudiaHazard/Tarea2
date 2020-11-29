@@ -17,7 +17,7 @@ import (
 
 type book struct {
 	cantPar         int32
-	chunkpormaquina []*connection.ListaNChunks
+	chunkpormaquina []int32
 }
 
 //Server datos
@@ -25,7 +25,9 @@ type Server struct {
 	id  int
 	mux *sync.Mutex
 	log map[string]book // string es el nombre del libro
+	ipMaquinas map[int32]string
 }
+
 
 const (
 	ipportListen    = ":50051"
@@ -53,9 +55,12 @@ func EditaResigtro(s *Server, NombreLibro string, csvFile *os.File) {
 	csvwriter := csv.NewWriter(csvFile)
 	defer csvwriter.Flush()
 	csvwriter.Write([]string{NombreLibro, strconv.Itoa(int(s.log[NombreLibro].cantPar))})
-	//for i in
-	//val := []string{o.Id, o.Tipo, o.Nombre, strconv.Itoa(int(o.Valor)), o.Origen, o.Destino, strconv.Itoa(int(nSeg))}
-	//csvwriter.Write(val)
+	var val string
+	for index, element := range s.log[NombreLibro].chunkpormaquina {
+	 	val = []string{"Parte_"+strconv.Itoa(len(s.log)+"_"+strconv.Itoa(i+1),s.ipMaquinas[}
+		csvwriter.Write(val)
+	}
+
 }
 
 //AceptaPropuesta acepta o rechaza la propuesta con cierta probablidad.
@@ -98,6 +103,7 @@ func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribuc
 	chunkpormaquina := []*connection.ListaNChunks{}
 	chunkpormaquina = in.ListaDataNodesChunk
 	s.log[in.NombreLibro] = book{cantPar: in.NumeroPar, chunkpormaquina: chunkpormaquina}
+
 	return &connection.Message{Message: "Ok"}, nil
 }
 
@@ -112,7 +118,12 @@ func main() {
 		log.Fatalf("Failed to listen on "+ipportListen+": %v", err)
 	}
 
-	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}}
+	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}}
+
+	//Agrega el string ip de cada maquina
+	s.ipMaquinas[1] = ipportDataNode1
+	s.ipMaquinas[2] = ipportDataNode2
+	s.ipMaquinas[3] = ipportDataNode3
 
 	grpcServer := grpc.NewServer()
 
