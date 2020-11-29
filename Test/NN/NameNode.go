@@ -2,22 +2,70 @@ package main
 
 import (
 	"context"
+	"encoding/csv"
 	"fmt"
 	"log"
+	"math/rand"
 	"net"
+	"os"
+	"strconv"
+	"sync"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 	"google.golang.org/grpc"
 )
 
+type book struct {
+	cantPar         int32
+	chunkpormaquina map[string][]int32
+}
+
 //Server datos
 type Server struct {
-	id int
+	id  int
+	mux *sync.Mutex
+	log map[string]book // string es el nombre del libro
 }
 
 const (
-	ipportListen = ":50051"
+	ipportListen    = ":50051"
+	ipportDataNode1 = "10.6.40.162:50051"
+	ipportDataNode2 = "10.6.40.163:50051"
+	ipportDataNode3 = "10.6.40.164:50051"
+	probabilidad    = 0.8
 )
+
+//CreaRegistro en el que escribira el NameNode.
+func CreaRegistro() *os.File {
+	csvFile, err := os.Create("Log.csv")
+
+	if err != nil {
+		log.Fatalf("Fallo al crear csv file: %s", err)
+	}
+
+	return csvFile
+
+}
+
+//EditaResigtro agrega registro del NameNode al csv file.
+func EditaResigtro(s *Server, NombreLibro string, csvFile *os.File) {
+
+	csvwriter := csv.NewWriter(csvFile)
+	defer csvwriter.Flush()
+	csvwriter.Write([]string{NombreLibro, strconv.Itoa(int(s.log[NombreLibro].cantPar))})
+	//for i in
+	//val := []string{o.Id, o.Tipo, o.Nombre, strconv.Itoa(int(o.Valor)), o.Origen, o.Destino, strconv.Itoa(int(nSeg))}
+	//csvwriter.Write(val)
+}
+
+//AceptaPropuesta acepta o rechaza la propuesta con cierta probablidad.
+func AceptaPropuesta() string {
+	n := rand.Float64()
+	if n < 0.8 {
+		return "SI"
+	}
+	return "NO"
+}
 
 //EnviaChunks Recibe propuesta de un namenode
 func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
@@ -39,12 +87,19 @@ func (s *Server) DescargaChunk(ctx context.Context, in *connection.DivisionLibro
 
 //EnviaPropuesta en el caso de namenode recibe propuesta de distribucion rechaza o acepta y guarda dicha distribucion, en el caso que venga aceptada solo la guarda.
 func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
-
-	return &connection.Message{Message: "Ok"}, nil
+	m := AceptaPropuesta()
+	return &connection.Message{Message: m}, nil
 }
 
 //EnviaDistribucion distribuye los chunks segun la propuesta aceptada
 func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
+	defer s.mux.Unlock()
+	s.mux.Lock()
+	chunkpormaquina := map[string][]int32{}
+	chunkpormaquina[ipportDataNode1] = in.ListaDataNode1
+	chunkpormaquina[ipportDataNode2] = in.ListaDataNode2
+	chunkpormaquina[ipportDataNode3] = in.ListaDataNode3
+	s.log[in.NombreLibro] = book{cantPar: 0, chunkpormaquina: chunkpormaquina}
 
 	return &connection.Message{Message: "Ok"}, nil
 }
@@ -60,9 +115,12 @@ func main() {
 		log.Fatalf("Failed to listen on "+ipportListen+": %v", err)
 	}
 
-	s := Server{id: 1}
+	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}}
 
 	grpcServer := grpc.NewServer()
+
+	//Crea el archivo de registro Log de NameNode
+	//csvFile = CreaRegistro()
 
 	fmt.Println("En espera de Informacion Chunks para servidor")
 
