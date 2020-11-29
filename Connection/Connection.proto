@@ -40,4 +40,5 @@ service MensajeriaService{
     rpc EnviaPropuesta(Distribucion) returns (Message) {}
     rpc EnviaDistribucion(Distribucion) returns (Message) {}
     rpc ConsultaLibrosDisponibles(Message) returns (Libros) {}
+    rpc ChequeoPing(Message) returns (Message) {}
 }
