@@ -114,7 +114,7 @@ func (s *Server) ConsultaLibrosDisponibles(ctx context.Context, in *connection.M
 //ChequeoPing chequea que un nodo no este caido
 func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*connection.Message, error) {
 
-	return &connection.Message{Message: "Disponible?"}, nil
+	return &connection.Message{Message: "Disponible"}, nil
 }
 
 //Servidor ejecucion de servidor para DataNode

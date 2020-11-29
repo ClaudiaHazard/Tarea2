@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
@@ -19,24 +20,21 @@ const (
 )
 
 //CreaPropuesta crea propuesta de distribucion en los datanodes.
-func CreaPropuesta(Chunks []byte) ([]int32, []int32, []int32) {
-	var l1 []int32
-	var l2 []int32
-	var l3 []int32
-
+func CreaPropuesta(Chunks []byte) []int32 {
+	var l []int32
 	for i := 0; i < len(Chunks); i++ {
 		n := rand.Float64()
 		if n < 0.33 {
-			l1 = append(l1, int32(i))
+			l = append(l, 1)
 		}
 		if n > 0.33 && n < 0.66 {
-			l2 = append(l2, int32(i))
+			l = append(l, 2)
 		}
 		if n > 0.66 {
-			l3 = append(l3, int32(i))
+			l = append(l, 3)
 		}
 	}
-	return l1, l2, l3
+	return l
 }
 
 //EnviaDistribucionDistribuida envia distribucion utilizando algoritmo distribuido para utilizar el NameNode
@@ -72,9 +70,9 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []byte, nom
 	c := connection.NewMensajeriaServiceClient(conns[0])
 	ctx := context.Background()
 
-	l1, l2, l3 := CreaPropuesta(listaChunks)
+	l := CreaPropuesta(listaChunks)
 
-	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNode1: l1, ListaDataNode2: l2, ListaDataNode3: l3}
+	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
 
 	response, err := c.EnviaPropuesta(ctx, Distribucion)
 
@@ -90,9 +88,9 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []byte, nombr
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	l1, l2, l3 := CreaPropuesta(listaChunks)
+	l := CreaPropuesta(listaChunks)
 
-	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNode1: l1, ListaDataNode2: l2, ListaDataNode3: l3}
+	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
 
 	response, err := c.EnviaPropuesta(ctx, Distribucion)
 
@@ -122,6 +120,22 @@ func EnviaChunks(conn *grpc.ClientConn) *connection.Message {
 	return response
 }
 
+//ChequeaCaido envia aviso para saber si los datanode estan disponibles
+func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
+	c := connection.NewMensajeriaServiceClient(conn)
+	ctx := context.Background()
+
+	response, err := c.ChequeoPing(ctx, &connection.Message{Message: "Disponible?"})
+
+	if err != nil {
+		fmt.Println("Error de conexion con el DataNode, puede que este caido")
+		return &connection.Message{Message: "Caido"}
+	}
+
+	print(response.Message)
+	return response
+}
+
 //Ejecucion de DataNode Cliente
 func main() {
 	fmt.Println("Hello there!")
@@ -135,6 +149,9 @@ func main() {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
 
-	EnviaChunks(conn)
-
+	ChequeaCaido(conn)
+	time.Sleep(5 * time.Second)
+	ChequeaCaido(conn)
+	time.Sleep(5 * time.Second)
+	ChequeaCaido(conn)
 }
