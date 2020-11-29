@@ -26,6 +26,7 @@ type Server struct {
 	mux        *sync.Mutex
 	log        map[string]book // string es el nombre del libro
 	ipMaquinas map[int32]string
+	librosDisp []string
 }
 
 var csvFile *os.File
@@ -103,13 +104,14 @@ func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribuc
 	s.mux.Lock()
 	s.log[in.NombreLibro] = book{cantPar: in.NumeroPar, chunkpormaquina: in.ListaDataNodesChunk}
 	EditaResigtro(s, in.NombreLibro, csvFile)
+	s.librosDisp = append(s.librosDisp, in.NombreLibro)
 	return &connection.Message{Message: "Ok"}, nil
 }
 
 //ConsultaLibrosDisponibles distribuye los chunks segun la propuesta aceptada
 func (s *Server) ConsultaLibrosDisponibles(ctx context.Context, in *connection.Message) (*connection.Libros, error) {
 
-	return &connection.Libros{}, nil
+	return &connection.Libros{LibrosDisponibles: s.librosDisp}, nil
 }
 
 //Servidor ejecucion de servidor para NameNode
@@ -123,7 +125,7 @@ func main() {
 		log.Fatalf("Failed to listen on "+ipportListen+": %v", err)
 	}
 
-	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}}
+	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}, librosDisp: []string{}}
 
 	//Agrega el string ip de cada maquina
 	s.ipMaquinas[1] = ipportDataNode1
