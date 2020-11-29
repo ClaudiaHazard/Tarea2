@@ -17,7 +17,7 @@ import (
 
 type book struct {
 	cantPar         int32
-	chunkpormaquina [][]int32
+	chunkpormaquina []*connection.ListaNChunks
 }
 
 //Server datos
@@ -95,10 +95,9 @@ func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion
 func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
 	defer s.mux.Unlock()
 	s.mux.Lock()
-	chunkpormaquina := map[string][]int32{}
+	chunkpormaquina := []*connection.ListaNChunks{}
 	chunkpormaquina = in.ListaDataNodesChunk
-	s.log[in.NombreLibro] = book{cantPar: 0, chunkpormaquina: chunkpormaquina}
-
+	s.log[in.NombreLibro] = book{cantPar: in.NumeroPar, chunkpormaquina: chunkpormaquina}
 	return &connection.Message{Message: "Ok"}, nil
 }
 
