@@ -83,7 +83,7 @@ func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connec
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
 func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.NombreLibro) (*connection.Distribucion, error) {
 
-	return &connection.Distribucion{}, nil
+	return &connection.Distribucion{NombreLibro: in.NombreLibro, NumeroPar: s.log[in.NombreLibro].cantPar, ListaDataNodesChunk: s.log[in.NombreLibro].chunkpormaquina}, nil
 }
 
 //DescargaChunk descarga un chunk de alguno de los datanodes
