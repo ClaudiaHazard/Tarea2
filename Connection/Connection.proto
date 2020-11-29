@@ -22,10 +22,14 @@ message DivisionLibro {
     int32 nChunk = 2;
 }
 
+message ListaNChunks {
+    repeated int32 listachunk = 1;
+}
+
 message Distribucion {
     string NombreLibro = 1;
     int32 numeroPar = 2;
-    repeated int32 listaDataNodesChunk = 3;
+    repeated ListaNChunks listaDataNodesChunk = 3;
 }
 
 service MensajeriaService{
