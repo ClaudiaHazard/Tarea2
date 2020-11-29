@@ -18,20 +18,14 @@ message Message {
 }
 
 message DivisionLibro {
-    int32 NDN = 1;
+    string NombreLibro = 1;
     int32 nChunk = 2;
 }
 
-//message Distribucion {
-//    string NombreLibro = 1;
-//    repeated DivisionLibro listaDataNodesChunk = 2;
-//}
-
 message Distribucion {
     string NombreLibro = 1;
-    repeated DivisionLibro listaDataNodesChunk = 2;
-    repeated int32 listaDataNode2 = 3;
-    repeated int32 listaDataNode3 = 4; 
+    int32 numeroPar = 2;
+    repeated int32 listaDataNodesChunk = 3;
 }
 
 service MensajeriaService{
