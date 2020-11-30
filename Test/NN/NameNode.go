@@ -9,6 +9,7 @@ import (
 	"os"
 	"strconv"
 	"sync"
+	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 	"google.golang.org/grpc"
@@ -18,6 +19,8 @@ type book struct {
 	cantPar         int32
 	chunkpormaquina []int32
 }
+
+var wg sync.WaitGroup
 
 //Server datos
 type Server struct {
@@ -169,7 +172,18 @@ func (s *Server) ConsultaLibrosDisponibles(ctx context.Context, in *connection.M
 
 //ChequeoPing chequea que un nodo no este caido
 func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*connection.Message, error) {
+	wg.Add(1)
+	time.Sleep(5 * time.Second)
+	wg.Done()
 	return &connection.Message{Message: "Disponible"}, nil
+}
+
+//ConsultaUsoLog no es necesaria en el NameNode
+func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*connection.Message, error) {
+	println("Entro a la consulta: " + time.Now().Format("2006-01-02 15:04:05"))
+	wg.Wait()
+	println("Termino: " + time.Now().Format("2006-01-02 15:04:05"))
+	return &connection.Message{Message: "Ok"}, nil
 }
 
 //Servidor ejecucion de servidor para NameNode

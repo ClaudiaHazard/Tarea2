@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"sync"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 	"google.golang.org/grpc"
@@ -20,6 +21,7 @@ import (
 type Server struct {
 	id             int
 	ChunksTemporal map[string][]*connection.Chunk //string es el nombre del libro
+	usandoLog      bool
 }
 
 const (
@@ -29,6 +31,8 @@ const (
 	ipportDataNode3 = "10.6.40.164:50051"
 	probabilidad    = 0.8
 )
+
+var wg sync.WaitGroup
 
 //AceptaPropuesta acepta o rechaza la propuesta con cierta probablidad.
 func AceptaPropuesta() string {
@@ -129,6 +133,12 @@ func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*conn
 	return &connection.Message{Message: "Disponible"}, nil
 }
 
+//ConsultaUsoLog chequea que un nodo no este caido
+func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*connection.Message, error) {
+	wg.Wait()
+	return &connection.Message{Message: "Ok"}, nil
+}
+
 //Servidor ejecucion de servidor para DataNode
 func main() {
 	fmt.Println("Hello there!")
@@ -140,7 +150,7 @@ func main() {
 		log.Fatalf("Failed to listen on "+ipportListen+": %v", err)
 	}
 
-	s := Server{id: 1}
+	s := Server{id: 1, ChunksTemporal: map[string][]*connection.Chunk{}, usandoLog: false}
 
 	grpcServer := grpc.NewServer()
 

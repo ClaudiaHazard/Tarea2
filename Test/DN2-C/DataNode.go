@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"sync"
 	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
@@ -18,6 +19,9 @@ const (
 	ipportDataNode2 = "10.6.40.163:50051"
 	ipportDataNode3 = "10.6.40.164:50051"
 )
+
+var usandoLog bool
+var wg sync.WaitGroup
 
 //CreaPropuesta crea propuesta de distribucion en los datanodes.
 func CreaPropuesta(Chunks []byte, Nodelist []int32) []int32 {
@@ -79,7 +83,16 @@ func EnviaDistribucionDistribuida(conns []*grpc.ClientConn, conn *grpc.ClientCon
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
+	//Consulta a los otros datanode por el uso del log
+	wg.Add(1)
+	go ConsultaUsoLog(conns[0])
+	wg.Add(1)
+	go ConsultaUsoLog(conns[1])
+	wg.Wait()
+
+	wg.Add(1)
 	response, err := c.EnviaDistribucion(ctx, Distribucion)
+	wg.Done()
 
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
@@ -275,6 +288,21 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 	return response
 }
 
+//ConsultaUsoLog envia aviso para saber si se puede utilizar el log
+func ConsultaUsoLog(conn *grpc.ClientConn) *connection.Message {
+
+	c := connection.NewMensajeriaServiceClient(conn)
+	ctx := context.Background()
+
+	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: "Disponible?"})
+
+	if err != nil {
+		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
+	}
+	defer wg.Done()
+	return response
+}
+
 //Ejecucion de DataNode Cliente
 func main() {
 	fmt.Println("Hello there!")
@@ -287,10 +315,10 @@ func main() {
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
-
-	ChequeaCaido(conn)
-	time.Sleep(5 * time.Second)
-	ChequeaCaido(conn)
-	time.Sleep(5 * time.Second)
-	ChequeaCaido(conn)
+	wg.Add(1)
+	go ChequeaCaido(conn)
+	time.Sleep(500 * time.Millisecond)
+	wg.Add(1)
+	go ConsultaUsoLog(conn)
+	wg.Wait()
 }
