@@ -44,12 +44,7 @@ func AceptaPropuesta() string {
 }
 
 //GuardaChunk guarda el chunk en archivo.
-func GuardaChunk(chunk *connection.Chunk) {
-
-}
-
-//EnviaChunkCliente no es necesaria en el NameNode
-func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+func GuardaChunk(in *connection.Chunk) {
 	parts := strings.Split(in.NombreLibro, ".")
 	fileName := parts[0] + strconv.Itoa(int(in.NChunk))
 	_, err := os.Create(fileName)
@@ -63,6 +58,11 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 	ioutil.WriteFile(fileName, in.Chunk, os.ModeAppend)
 
 	fmt.Println("Downloaded : ", fileName)
+}
+
+//EnviaChunkCliente no es necesaria en el NameNode
+func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+
 	return &connection.Message{Message: "Descargada\n"}, nil
 }
 
