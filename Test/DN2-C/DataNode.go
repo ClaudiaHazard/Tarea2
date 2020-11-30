@@ -20,19 +20,56 @@ const (
 )
 
 //CreaPropuesta crea propuesta de distribucion en los datanodes.
-func CreaPropuesta(Chunks []byte) []int32 {
+func CreaPropuesta(Chunks []byte, Nodelist []int32) []int32 {
 	var l []int32
-	for i := 0; i < len(Chunks); i++ {
-		n := rand.Float64()
-		if n < 0.33 {
-			l = append(l, 1)
-		}
-		if n > 0.33 && n < 0.66 {
+
+	if len(Nodelist) == 3 {
+		l = append(l, 1)
+		if len(Chunks) > 1 {
 			l = append(l, 2)
 		}
-		if n > 0.66 {
+		if len(Chunks) > 2 {
 			l = append(l, 3)
 		}
+		if len(Chunks) > 3 {
+			for i := 3; i < len(Chunks); i++ {
+				n := rand.Float64()
+				if n < 0.33 {
+					l = append(l, 1)
+				}
+				if n > 0.33 && n < 0.66 {
+					l = append(l, 2)
+				}
+				if n > 0.66 {
+					l = append(l, 3)
+				}
+			}
+		}
+		return l
+	}
+	if len(Nodelist) == 2 {
+		l = append(l, Nodelist[0])
+		if len(Chunks) > 1 {
+			l = append(l, Nodelist[1])
+		}
+		if len(Chunks) > 2 {
+			for i := 2; i < len(Chunks); i++ {
+				n := rand.Float64()
+				if n < 0.5 {
+					l = append(l, Nodelist[0])
+				}
+				if n > 0.5 {
+					l = append(l, Nodelist[1])
+				}
+			}
+		}
+		return l
+	}
+	if len(Nodelist) == 1 {
+		for i := 0; i < len(Chunks); i++ {
+			l = append(l, Nodelist[0])
+		}
+		return l
 	}
 	return l
 }
@@ -65,30 +102,84 @@ func EnviaDistribucionCentralizada(conn *grpc.ClientConn, Distribucion *connecti
 	return response
 }
 
-//EnviaPropuestaDistribuida envia propuesta distribuida
-func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []byte, nombreLibro string) *connection.Message {
-	c := connection.NewMensajeriaServiceClient(conns[0])
-	ctx := context.Background()
+//BorrarElemento borra el elemento en la posicion pos.
+func BorrarElemento(arr []int32, pos int) []int32 {
+	copy(arr[pos:], arr[pos+1:])
+	arr[len(arr)-1] = 0
+	arr = arr[:len(arr)-1]
+	return arr
+}
 
-	l := CreaPropuesta(listaChunks)
+//EnviaPropuestaDistribuida envia propuesta distribuida
+func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []byte, nombreLibro string) *connection.Distribucion {
+	//c := connection.NewMensajeriaServiceClient(conns[0])
+	//ctx := context.Background()
+
+	listaNodos := []int32{1, 2, 3}
+
+	l := CreaPropuesta(listaChunks, listaNodos)
 
 	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
 
-	response, err := c.EnviaPropuesta(ctx, Distribucion)
+	//Chequea que los otros 2 nodos acepten la propuesta
+	respuesta1 := ChequeaCaido(conns[0]).Message
+	respuesta2 := ChequeaCaido(conns[1]).Message
 
-	if err != nil {
-		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
+	if respuesta1 == "Caido" && respuesta2 != "Caido" {
+		listaNodos = []int32{1, 3}
+		//listaNodos = []int32{2,3}
+		//listaNodos = []int32{3,2}
+
+		l = CreaPropuesta(listaChunks, listaNodos)
+
+		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+
+		//Chequea que el otro nodo acepte la propuesta
+		respuesta1 = ChequeaCaido(conns[1]).Message
+
+		return Distribucion
 	}
 
-	return response
+	if respuesta2 == "Caido" && respuesta1 != "Caido" {
+		listaNodos = []int32{1, 2}
+		//listaNodos = []int32{2,1}
+		//listaNodos = []int32{3,1}
+
+		l = CreaPropuesta(listaChunks, listaNodos)
+
+		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+
+		//Chequea que el otro nodo acepte la propuesta
+		respuesta1 = ChequeaCaido(conns[0]).Message
+
+		return Distribucion
+	}
+
+	if respuesta1 == "Caido" && respuesta2 == "Caido" {
+		listaNodos = []int32{1}
+		//listaNodos = []int32{2}
+		//listaNodos = []int32{3}
+
+		l = CreaPropuesta(listaChunks, listaNodos)
+
+		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+
+		return Distribucion
+	}
+
+	return Distribucion
 }
 
 //EnviaPropuestaCentralizada envia propuesta centralizada
-func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []byte, nombreLibro string) *connection.Message {
+func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []byte, nombreLibro string) *connection.Distribucion {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	l := CreaPropuesta(listaChunks)
+	//Envia propuesta con todos los nodos
+
+	listaNodos := []int32{1, 2, 3}
+
+	l := CreaPropuesta(listaChunks, listaNodos)
 
 	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
 
@@ -98,7 +189,55 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []byte, nombr
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
 	}
 
-	return response
+	if response.Message == "SI" {
+		return Distribucion
+	}
+
+	if response.Message != "NO" {
+		//Elimina el nodo caido de la propuesta y crea nueva propuesta.
+
+		if response.Message == "1" {
+			listaNodos = BorrarElemento(listaNodos, 0)
+		}
+
+		if response.Message == "2" {
+			listaNodos = BorrarElemento(listaNodos, 1)
+		}
+
+		if response.Message == "3" {
+			listaNodos = BorrarElemento(listaNodos, 2)
+		}
+
+		l = CreaPropuesta(listaChunks, listaNodos)
+
+		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+
+		response, err = c.EnviaPropuesta(ctx, Distribucion)
+
+		if err != nil {
+			log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
+		}
+		if response.Message == "SI" {
+			return Distribucion
+		}
+	}
+
+	//En el caso de que los otros 2 nodos esten caidos.
+
+	if response.Message == "NO" {
+		//Nodo1
+		listaNodos = []int32{1}
+		//Nodo2
+		//listaNodos = []int32{2}
+		//Nodo3
+		//listaNodos = []int32{3}
+	}
+
+	l = CreaPropuesta(listaChunks, listaNodos)
+
+	Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+
+	return Distribucion
 }
 
 //EnviaChunks envia chunks con la distribucion que fue aceptada previamente
@@ -109,7 +248,7 @@ func EnviaChunks(conn *grpc.ClientConn) *connection.Message {
 
 	print("EnviaChunks")
 
-	response, err := c.EnviaChunks(ctx, &connection.Chunk{})
+	response, err := c.EnviaChunkCliente(ctx, &connection.Chunk{})
 
 	print("EnviaChunks")
 

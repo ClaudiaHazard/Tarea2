@@ -64,9 +64,61 @@ func EditaResigtro(s *Server, NombreLibro string, csvFile *os.File) {
 
 }
 
+//IntIn chequea que un entero este en una lista
+func IntIn(l []int32, n int32) bool {
+	for index, element := range l {
+		if element == n {
+			return true
+		}
+	}
+	return false
+}
+
+//NodosEnPropuesta entrega cuales nodos estan en la propuesta.
+func NodosEnPropuesta(prop *connection.Distribucion) []int32 {
+	l := []int32{}
+	if IntIn(prop.ListaDataNodesChunk, 1) {
+		l = append(l, 1)
+	}
+	if IntIn(prop.ListaDataNodesChunk, 2) {
+		l = append(l, 2)
+	}
+	if IntIn(prop.ListaDataNodesChunk, 3) {
+		l = append(l, 3)
+	}
+	return l
+}
+
 //AceptaPropuesta acepta o rechaza la propuesta con cierta probablidad.
-func AceptaPropuesta() string {
-	return "SI"
+func AceptaPropuesta(prop *connection.Distribucion) string {
+	l := NodosEnPropuesta(prop)
+	p1 := true
+	p2 := true
+	p3 := true
+	for index, element := range l {
+		if element == 1 {
+			//Chequeaping() debe usar cliente
+		}
+		if element == 2 {
+			//Chequeaping() debe usar cliente
+		}
+		if element == 3 {
+			//Chequeaping() debe usar cliente
+		}
+	}
+	if p1 && p2 && p3 {
+		return "SI"
+	}
+	if p1 && p2 {
+		return "3"
+	}
+	if p1 && p3 {
+		return "2"
+	}
+	if p2 && p3 {
+		return "1"
+	}
+	return "NO" // If no, solo el nodo que envio el mensaje esta disponible.
 }
 
 //EnviaChunkCliente no es necesaria en el NameNode
@@ -95,7 +147,7 @@ func (s *Server) DescargaChunk(ctx context.Context, in *connection.DivisionLibro
 
 //EnviaPropuesta en el caso de namenode recibe propuesta de distribucion rechaza o acepta y guarda dicha distribucion, en el caso que venga aceptada solo la guarda.
 func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
-	m := AceptaPropuesta()
+	m := AceptaPropuesta(in)
 	return &connection.Message{Message: m}, nil
 }
 
