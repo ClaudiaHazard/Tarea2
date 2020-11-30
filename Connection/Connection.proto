@@ -33,6 +33,7 @@ message Libros {
     repeated string librosDisponibles = 1;
 }
 
+
 service MensajeriaService{
     rpc EnviaChunkCliente(Chunk) returns (Message) {}
     rpc EnviaChunkDataNode(Chunk) returns (Message) {}
@@ -42,4 +43,5 @@ service MensajeriaService{
     rpc EnviaDistribucion(Distribucion) returns (Message) {}
     rpc ConsultaLibrosDisponibles(Message) returns (Libros) {}
     rpc ChequeoPing(Message) returns (Message) {}
+    rpc ConsultaUsoLog(Message) returns (Message) {}//EnviaTimestamp recibe un ok
 }

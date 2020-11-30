@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.25.0-devel
 // 	protoc        v3.13.0
-// source: Connection.proto
+// source: connection.proto
 
 package connection
 
@@ -38,7 +38,7 @@ type Chunk struct {
 func (x *Chunk) Reset() {
 	*x = Chunk{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_Connection_proto_msgTypes[0]
+		mi := &file_connection_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -51,7 +51,7 @@ func (x *Chunk) String() string {
 func (*Chunk) ProtoMessage() {}
 
 func (x *Chunk) ProtoReflect() protoreflect.Message {
-	mi := &file_Connection_proto_msgTypes[0]
+	mi := &file_connection_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -64,7 +64,7 @@ func (x *Chunk) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Chunk.ProtoReflect.Descriptor instead.
 func (*Chunk) Descriptor() ([]byte, []int) {
-	return file_Connection_proto_rawDescGZIP(), []int{0}
+	return file_connection_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Chunk) GetChunk() []byte {
@@ -106,7 +106,7 @@ type NombreLibro struct {
 func (x *NombreLibro) Reset() {
 	*x = NombreLibro{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_Connection_proto_msgTypes[1]
+		mi := &file_connection_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -119,7 +119,7 @@ func (x *NombreLibro) String() string {
 func (*NombreLibro) ProtoMessage() {}
 
 func (x *NombreLibro) ProtoReflect() protoreflect.Message {
-	mi := &file_Connection_proto_msgTypes[1]
+	mi := &file_connection_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -132,7 +132,7 @@ func (x *NombreLibro) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use NombreLibro.ProtoReflect.Descriptor instead.
 func (*NombreLibro) Descriptor() ([]byte, []int) {
-	return file_Connection_proto_rawDescGZIP(), []int{1}
+	return file_connection_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *NombreLibro) GetNombreLibro() string {
@@ -153,7 +153,7 @@ type Message struct {
 func (x *Message) Reset() {
 	*x = Message{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_Connection_proto_msgTypes[2]
+		mi := &file_connection_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -166,7 +166,7 @@ func (x *Message) String() string {
 func (*Message) ProtoMessage() {}
 
 func (x *Message) ProtoReflect() protoreflect.Message {
-	mi := &file_Connection_proto_msgTypes[2]
+	mi := &file_connection_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -179,7 +179,7 @@ func (x *Message) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Message.ProtoReflect.Descriptor instead.
 func (*Message) Descriptor() ([]byte, []int) {
-	return file_Connection_proto_rawDescGZIP(), []int{2}
+	return file_connection_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *Message) GetMessage() string {
@@ -201,7 +201,7 @@ type DivisionLibro struct {
 func (x *DivisionLibro) Reset() {
 	*x = DivisionLibro{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_Connection_proto_msgTypes[3]
+		mi := &file_connection_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -214,7 +214,7 @@ func (x *DivisionLibro) String() string {
 func (*DivisionLibro) ProtoMessage() {}
 
 func (x *DivisionLibro) ProtoReflect() protoreflect.Message {
-	mi := &file_Connection_proto_msgTypes[3]
+	mi := &file_connection_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -227,7 +227,7 @@ func (x *DivisionLibro) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DivisionLibro.ProtoReflect.Descriptor instead.
 func (*DivisionLibro) Descriptor() ([]byte, []int) {
-	return file_Connection_proto_rawDescGZIP(), []int{3}
+	return file_connection_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *DivisionLibro) GetNombreLibro() string {
@@ -257,7 +257,7 @@ type Distribucion struct {
 func (x *Distribucion) Reset() {
 	*x = Distribucion{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_Connection_proto_msgTypes[4]
+		mi := &file_connection_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -270,7 +270,7 @@ func (x *Distribucion) String() string {
 func (*Distribucion) ProtoMessage() {}
 
 func (x *Distribucion) ProtoReflect() protoreflect.Message {
-	mi := &file_Connection_proto_msgTypes[4]
+	mi := &file_connection_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -283,7 +283,7 @@ func (x *Distribucion) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Distribucion.ProtoReflect.Descriptor instead.
 func (*Distribucion) Descriptor() ([]byte, []int) {
-	return file_Connection_proto_rawDescGZIP(), []int{4}
+	return file_connection_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *Distribucion) GetNombreLibro() string {
@@ -318,7 +318,7 @@ type Libros struct {
 func (x *Libros) Reset() {
 	*x = Libros{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_Connection_proto_msgTypes[5]
+		mi := &file_connection_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -331,7 +331,7 @@ func (x *Libros) String() string {
 func (*Libros) ProtoMessage() {}
 
 func (x *Libros) ProtoReflect() protoreflect.Message {
-	mi := &file_Connection_proto_msgTypes[5]
+	mi := &file_connection_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -344,7 +344,7 @@ func (x *Libros) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Libros.ProtoReflect.Descriptor instead.
 func (*Libros) Descriptor() ([]byte, []int) {
-	return file_Connection_proto_rawDescGZIP(), []int{5}
+	return file_connection_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *Libros) GetLibrosDisponibles() []string {
@@ -354,10 +354,10 @@ func (x *Libros) GetLibrosDisponibles() []string {
 	return nil
 }
 
-var File_Connection_proto protoreflect.FileDescriptor
+var File_connection_proto protoreflect.FileDescriptor
 
-var file_Connection_proto_rawDesc = []byte{
-	0x0a, 0x10, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f,
+var file_connection_proto_rawDesc = []byte{
+	0x0a, 0x10, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x70, 0x72, 0x6f,
 	0x74, 0x6f, 0x12, 0x0a, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x75,
 	0x0a, 0x05, 0x43, 0x68, 0x75, 0x6e, 0x6b, 0x12, 0x14, 0x0a, 0x05, 0x63, 0x68, 0x75, 0x6e, 0x6b,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x0c, 0x52, 0x05, 0x63, 0x68, 0x75, 0x6e, 0x6b, 0x12, 0x16, 0x0a,
@@ -388,7 +388,7 @@ var file_Connection_proto_rawDesc = []byte{
 	0x72, 0x6f, 0x73, 0x12, 0x2c, 0x0a, 0x11, 0x6c, 0x69, 0x62, 0x72, 0x6f, 0x73, 0x44, 0x69, 0x73,
 	0x70, 0x6f, 0x6e, 0x69, 0x62, 0x6c, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x11,
 	0x6c, 0x69, 0x62, 0x72, 0x6f, 0x73, 0x44, 0x69, 0x73, 0x70, 0x6f, 0x6e, 0x69, 0x62, 0x6c, 0x65,
-	0x73, 0x32, 0xb0, 0x04, 0x0a, 0x11, 0x4d, 0x65, 0x6e, 0x73, 0x61, 0x6a, 0x65, 0x72, 0x69, 0x61,
+	0x73, 0x32, 0xee, 0x04, 0x0a, 0x11, 0x4d, 0x65, 0x6e, 0x73, 0x61, 0x6a, 0x65, 0x72, 0x69, 0x61,
 	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x3d, 0x0a, 0x11, 0x45, 0x6e, 0x76, 0x69, 0x61,
 	0x43, 0x68, 0x75, 0x6e, 0x6b, 0x43, 0x6c, 0x69, 0x65, 0x6e, 0x74, 0x65, 0x12, 0x11, 0x2e, 0x63,
 	0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x43, 0x68, 0x75, 0x6e, 0x6b, 0x1a,
@@ -423,26 +423,30 @@ var file_Connection_proto_rawDesc = []byte{
 	0x71, 0x75, 0x65, 0x6f, 0x50, 0x69, 0x6e, 0x67, 0x12, 0x13, 0x2e, 0x63, 0x6f, 0x6e, 0x6e, 0x65,
 	0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x1a, 0x13, 0x2e,
 	0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61,
-	0x67, 0x65, 0x22, 0x00, 0x42, 0x28, 0x5a, 0x26, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
-	0x6f, 0x6d, 0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2f, 0x70, 0x61, 0x74, 0x68, 0x2f,
-	0x67, 0x65, 0x6e, 0x3b, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x62, 0x06,
-	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x67, 0x65, 0x22, 0x00, 0x12, 0x3c, 0x0a, 0x0e, 0x43, 0x6f, 0x6e, 0x73, 0x75, 0x6c, 0x74, 0x61,
+	0x55, 0x73, 0x6f, 0x4c, 0x6f, 0x67, 0x12, 0x13, 0x2e, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74,
+	0x69, 0x6f, 0x6e, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x1a, 0x13, 0x2e, 0x63, 0x6f,
+	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x2e, 0x4d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
+	0x22, 0x00, 0x42, 0x28, 0x5a, 0x26, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d,
+	0x2f, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2f, 0x70, 0x61, 0x74, 0x68, 0x2f, 0x67, 0x65,
+	0x6e, 0x3b, 0x63, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x69, 0x6f, 0x6e, 0x62, 0x06, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_Connection_proto_rawDescOnce sync.Once
-	file_Connection_proto_rawDescData = file_Connection_proto_rawDesc
+	file_connection_proto_rawDescOnce sync.Once
+	file_connection_proto_rawDescData = file_connection_proto_rawDesc
 )
 
-func file_Connection_proto_rawDescGZIP() []byte {
-	file_Connection_proto_rawDescOnce.Do(func() {
-		file_Connection_proto_rawDescData = protoimpl.X.CompressGZIP(file_Connection_proto_rawDescData)
+func file_connection_proto_rawDescGZIP() []byte {
+	file_connection_proto_rawDescOnce.Do(func() {
+		file_connection_proto_rawDescData = protoimpl.X.CompressGZIP(file_connection_proto_rawDescData)
 	})
-	return file_Connection_proto_rawDescData
+	return file_connection_proto_rawDescData
 }
 
-var file_Connection_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
-var file_Connection_proto_goTypes = []interface{}{
+var file_connection_proto_msgTypes = make([]protoimpl.MessageInfo, 6)
+var file_connection_proto_goTypes = []interface{}{
 	(*Chunk)(nil),         // 0: connection.Chunk
 	(*NombreLibro)(nil),   // 1: connection.NombreLibro
 	(*Message)(nil),       // 2: connection.Message
@@ -450,7 +454,7 @@ var file_Connection_proto_goTypes = []interface{}{
 	(*Distribucion)(nil),  // 4: connection.Distribucion
 	(*Libros)(nil),        // 5: connection.Libros
 }
-var file_Connection_proto_depIdxs = []int32{
+var file_connection_proto_depIdxs = []int32{
 	0, // 0: connection.MensajeriaService.EnviaChunkCliente:input_type -> connection.Chunk
 	0, // 1: connection.MensajeriaService.EnviaChunkDataNode:input_type -> connection.Chunk
 	1, // 2: connection.MensajeriaService.ConsultaUbicacionArchivo:input_type -> connection.NombreLibro
@@ -459,28 +463,30 @@ var file_Connection_proto_depIdxs = []int32{
 	4, // 5: connection.MensajeriaService.EnviaDistribucion:input_type -> connection.Distribucion
 	2, // 6: connection.MensajeriaService.ConsultaLibrosDisponibles:input_type -> connection.Message
 	2, // 7: connection.MensajeriaService.ChequeoPing:input_type -> connection.Message
-	2, // 8: connection.MensajeriaService.EnviaChunkCliente:output_type -> connection.Message
-	2, // 9: connection.MensajeriaService.EnviaChunkDataNode:output_type -> connection.Message
-	4, // 10: connection.MensajeriaService.ConsultaUbicacionArchivo:output_type -> connection.Distribucion
-	0, // 11: connection.MensajeriaService.DescargaChunk:output_type -> connection.Chunk
-	2, // 12: connection.MensajeriaService.EnviaPropuesta:output_type -> connection.Message
-	2, // 13: connection.MensajeriaService.EnviaDistribucion:output_type -> connection.Message
-	5, // 14: connection.MensajeriaService.ConsultaLibrosDisponibles:output_type -> connection.Libros
-	2, // 15: connection.MensajeriaService.ChequeoPing:output_type -> connection.Message
-	8, // [8:16] is the sub-list for method output_type
-	0, // [0:8] is the sub-list for method input_type
+	2, // 8: connection.MensajeriaService.ConsultaUsoLog:input_type -> connection.Message
+	2, // 9: connection.MensajeriaService.EnviaChunkCliente:output_type -> connection.Message
+	2, // 10: connection.MensajeriaService.EnviaChunkDataNode:output_type -> connection.Message
+	4, // 11: connection.MensajeriaService.ConsultaUbicacionArchivo:output_type -> connection.Distribucion
+	0, // 12: connection.MensajeriaService.DescargaChunk:output_type -> connection.Chunk
+	2, // 13: connection.MensajeriaService.EnviaPropuesta:output_type -> connection.Message
+	2, // 14: connection.MensajeriaService.EnviaDistribucion:output_type -> connection.Message
+	5, // 15: connection.MensajeriaService.ConsultaLibrosDisponibles:output_type -> connection.Libros
+	2, // 16: connection.MensajeriaService.ChequeoPing:output_type -> connection.Message
+	2, // 17: connection.MensajeriaService.ConsultaUsoLog:output_type -> connection.Message
+	9, // [9:18] is the sub-list for method output_type
+	0, // [0:9] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_Connection_proto_init() }
-func file_Connection_proto_init() {
-	if File_Connection_proto != nil {
+func init() { file_connection_proto_init() }
+func file_connection_proto_init() {
+	if File_connection_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_Connection_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_connection_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Chunk); i {
 			case 0:
 				return &v.state
@@ -492,7 +498,7 @@ func file_Connection_proto_init() {
 				return nil
 			}
 		}
-		file_Connection_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_connection_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*NombreLibro); i {
 			case 0:
 				return &v.state
@@ -504,7 +510,7 @@ func file_Connection_proto_init() {
 				return nil
 			}
 		}
-		file_Connection_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_connection_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Message); i {
 			case 0:
 				return &v.state
@@ -516,7 +522,7 @@ func file_Connection_proto_init() {
 				return nil
 			}
 		}
-		file_Connection_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_connection_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DivisionLibro); i {
 			case 0:
 				return &v.state
@@ -528,7 +534,7 @@ func file_Connection_proto_init() {
 				return nil
 			}
 		}
-		file_Connection_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_connection_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Distribucion); i {
 			case 0:
 				return &v.state
@@ -540,7 +546,7 @@ func file_Connection_proto_init() {
 				return nil
 			}
 		}
-		file_Connection_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_connection_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Libros); i {
 			case 0:
 				return &v.state
@@ -557,20 +563,20 @@ func file_Connection_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_Connection_proto_rawDesc,
+			RawDescriptor: file_connection_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   6,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_Connection_proto_goTypes,
-		DependencyIndexes: file_Connection_proto_depIdxs,
-		MessageInfos:      file_Connection_proto_msgTypes,
+		GoTypes:           file_connection_proto_goTypes,
+		DependencyIndexes: file_connection_proto_depIdxs,
+		MessageInfos:      file_connection_proto_msgTypes,
 	}.Build()
-	File_Connection_proto = out.File
-	file_Connection_proto_rawDesc = nil
-	file_Connection_proto_goTypes = nil
-	file_Connection_proto_depIdxs = nil
+	File_connection_proto = out.File
+	file_connection_proto_rawDesc = nil
+	file_connection_proto_goTypes = nil
+	file_connection_proto_depIdxs = nil
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -593,6 +599,7 @@ type MensajeriaServiceClient interface {
 	EnviaDistribucion(ctx context.Context, in *Distribucion, opts ...grpc.CallOption) (*Message, error)
 	ConsultaLibrosDisponibles(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Libros, error)
 	ChequeoPing(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error)
+	ConsultaUsoLog(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error)
 }
 
 type mensajeriaServiceClient struct {
@@ -675,6 +682,15 @@ func (c *mensajeriaServiceClient) ChequeoPing(ctx context.Context, in *Message, 
 	return out, nil
 }
 
+func (c *mensajeriaServiceClient) ConsultaUsoLog(ctx context.Context, in *Message, opts ...grpc.CallOption) (*Message, error) {
+	out := new(Message)
+	err := c.cc.Invoke(ctx, "/connection.MensajeriaService/ConsultaUsoLog", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // MensajeriaServiceServer is the server API for MensajeriaService service.
 type MensajeriaServiceServer interface {
 	EnviaChunkCliente(context.Context, *Chunk) (*Message, error)
@@ -685,6 +701,7 @@ type MensajeriaServiceServer interface {
 	EnviaDistribucion(context.Context, *Distribucion) (*Message, error)
 	ConsultaLibrosDisponibles(context.Context, *Message) (*Libros, error)
 	ChequeoPing(context.Context, *Message) (*Message, error)
+	ConsultaUsoLog(context.Context, *Message) (*Message, error)
 }
 
 // UnimplementedMensajeriaServiceServer can be embedded to have forward compatible implementations.
@@ -714,6 +731,9 @@ func (*UnimplementedMensajeriaServiceServer) ConsultaLibrosDisponibles(context.C
 }
 func (*UnimplementedMensajeriaServiceServer) ChequeoPing(context.Context, *Message) (*Message, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChequeoPing not implemented")
+}
+func (*UnimplementedMensajeriaServiceServer) ConsultaUsoLog(context.Context, *Message) (*Message, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ConsultaUsoLog not implemented")
 }
 
 func RegisterMensajeriaServiceServer(s *grpc.Server, srv MensajeriaServiceServer) {
@@ -864,6 +884,24 @@ func _MensajeriaService_ChequeoPing_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _MensajeriaService_ConsultaUsoLog_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Message)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(MensajeriaServiceServer).ConsultaUsoLog(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/connection.MensajeriaService/ConsultaUsoLog",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(MensajeriaServiceServer).ConsultaUsoLog(ctx, req.(*Message))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 var _MensajeriaService_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "connection.MensajeriaService",
 	HandlerType: (*MensajeriaServiceServer)(nil),
@@ -900,7 +938,11 @@ var _MensajeriaService_serviceDesc = grpc.ServiceDesc{
 			MethodName: "ChequeoPing",
 			Handler:    _MensajeriaService_ChequeoPing_Handler,
 		},
+		{
+			MethodName: "ConsultaUsoLog",
+			Handler:    _MensajeriaService_ConsultaUsoLog_Handler,
+		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "Connection.proto",
+	Metadata: "connection.proto",
 }

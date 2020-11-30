@@ -66,7 +66,7 @@ func EditaResigtro(s *Server, NombreLibro string, csvFile *os.File) {
 
 //IntIn chequea que un entero este en una lista
 func IntIn(l []int32, n int32) bool {
-	for index, element := range l {
+	for _, element := range l {
 		if element == n {
 			return true
 		}
@@ -92,18 +92,18 @@ func NodosEnPropuesta(prop *connection.Distribucion) []int32 {
 //AceptaPropuesta acepta o rechaza la propuesta con cierta probablidad.
 func AceptaPropuesta(prop *connection.Distribucion) string {
 	l := NodosEnPropuesta(prop)
-	p1 := true
-	p2 := true
-	p3 := true
-	for index, element := range l {
+	p1 := false
+	p2 := false
+	p3 := false
+	for _, element := range l {
 		if element == 1 {
-			//Chequeaping() debe usar cliente
+			//p1 = Chequeaping() debe usar cliente
 		}
 		if element == 2 {
-			//Chequeaping() debe usar cliente
+			//p2 = Chequeaping() debe usar cliente
 		}
 		if element == 3 {
-			//Chequeaping() debe usar cliente
+			//p3 = Chequeaping() debe usar cliente
 		}
 	}
 	if p1 && p2 && p3 {
