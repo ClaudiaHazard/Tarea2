@@ -16,15 +16,10 @@ import (
 	"google.golang.org/grpc"
 )
 
-type ChunkLibro struct {
-	NombreLibro string
-	numeroChunk int32
-}
-
 //Server datos
 type Server struct {
 	id             int
-	ChunksTemporal map[ChunkLibro][]Chunk
+	ChunksTemporal map[string][]*connection.Chunk //string es el nombre del libro
 }
 
 const (
@@ -69,8 +64,8 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 
 //EnviaChunkDataNode no es necesaria en el NameNode
 func (s *Server) EnviaChunkDataNode(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
-
-	return &connection.Message{}, nil
+	GuardaChunk(in)
+	return &connection.Message{Message: "Guardado"}, nil
 }
 
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes

@@ -5,7 +5,6 @@ import (
 	"encoding/csv"
 	"fmt"
 	"log"
-	"math/rand"
 	"net"
 	"os"
 	"strconv"
@@ -67,15 +66,17 @@ func EditaResigtro(s *Server, NombreLibro string, csvFile *os.File) {
 
 //AceptaPropuesta acepta o rechaza la propuesta con cierta probablidad.
 func AceptaPropuesta() string {
-	n := rand.Float64()
-	if n < 0.8 {
-		return "SI"
-	}
-	return "NO"
+	return "SI"
 }
 
-//EnviaChunks no es necesaria en el NameNode
-func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+//EnviaChunkCliente no es necesaria en el NameNode
+func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+
+	return &connection.Message{}, nil
+}
+
+//EnviaChunkDataNode no es necesaria en el NameNode
+func (s *Server) EnviaChunkDataNode(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 
 	return &connection.Message{}, nil
 }
