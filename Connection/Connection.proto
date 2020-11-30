@@ -34,7 +34,8 @@ message Libros {
 }
 
 service MensajeriaService{
-    rpc EnviaChunks(Chunk) returns (Message) {}
+    rpc EnviaChunkCliente(Chunk) returns (Message) {}
+    rpc EnviaChunkDataNode(Chunk) returns (Message) {}
     rpc ConsultaUbicacionArchivo(NombreLibro) returns (Distribucion) {}
     rpc DescargaChunk(DivisionLibro) returns (Chunk) {}
     rpc EnviaPropuesta(Distribucion) returns (Message) {}

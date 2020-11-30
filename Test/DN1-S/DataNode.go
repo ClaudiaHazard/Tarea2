@@ -16,9 +16,15 @@ import (
 	"google.golang.org/grpc"
 )
 
+type ChunkLibro struct {
+	NombreLibro string
+	numeroChunk int32
+}
+
 //Server datos
 type Server struct {
-	id int
+	id             int
+	ChunksTemporal map[ChunkLibro][]Chunk
 }
 
 const (
@@ -38,8 +44,13 @@ func AceptaPropuesta() string {
 	return "NO"
 }
 
-//EnviaChunks cliente/datanode envía chunk a datanode
-func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+//GuardaChunk guarda el chunk en archivo.
+func GuardaChunk(chunk *connection.Chunk) {
+
+}
+
+//EnviaChunkCliente no es necesaria en el NameNode
+func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 	parts := strings.Split(in.NombreLibro, ".")
 	fileName := parts[0] + strconv.Itoa(int(in.NChunk))
 	_, err := os.Create(fileName)
@@ -54,6 +65,12 @@ func (s *Server) EnviaChunks(ctx context.Context, in *connection.Chunk) (*connec
 
 	fmt.Println("Downloaded : ", fileName)
 	return &connection.Message{Message: "Descargada\n"}, nil
+}
+
+//EnviaChunkDataNode no es necesaria en el NameNode
+func (s *Server) EnviaChunkDataNode(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+
+	return &connection.Message{}, nil
 }
 
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
