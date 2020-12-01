@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"strconv"
 	"sync"
 	"time"
 
@@ -273,6 +274,7 @@ func EnviaChunks(conn *grpc.ClientConn, chunk *connection.Chunk) *connection.Mes
 //ReparteChunks envia los chunks a los datanodes correspondientes.
 func ReparteChunks(conns []*grpc.ClientConn, nombreLibro string, Distribucion *connection.Distribucion) {
 	for index, element := range Distribucion.ListaDataNodesChunk {
+		fmt.Println("Envia Chunks a DataNode " + strconv.Itoa(int(element)))
 		if element == 1 {
 			wg2.Add(1)
 			GuardaChunk(s.ChunksTemporal[nombreLibro][index])
