@@ -61,7 +61,6 @@ func GuardaTemporal(ch *connection.Chunk) string {
 func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 	fmt.Println("Recibe del cliente:")
 
-
 	final := GuardaTemporal(in)
 
 	if final == "Final" {
@@ -69,7 +68,7 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 		Cliente(in.NombreLibro, s.distr)
 	}
 
-	fmt.Println("Envia respuesta a cliente: ", fileName)
+	fmt.Println("Envia respuesta a cliente")
 
 	return &connection.Message{Message: "Descargada\n"}, nil
 }
