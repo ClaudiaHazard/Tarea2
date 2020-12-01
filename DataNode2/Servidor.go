@@ -150,7 +150,6 @@ func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*c
 	for s.timestamp != "" && timeSTP.Before(MSTP) {
 		//wg.Wait()
 		time.Sleep(500 * time.Millisecond)
-		print("Hola")
 	}
 	fmt.Println("El nodo no esta utilizando el log: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 	return &connection.Message{Message: "Ok"}, nil
