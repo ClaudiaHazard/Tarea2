@@ -60,7 +60,7 @@ func GuardaTemporal(ch *connection.Chunk) string {
 
 //EnviaChunkCliente recibe chunks del cliente
 func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
-	fmt.Println("Recibe del cliente:")
+	fmt.Println("Cliente envia Chunk")
 	final := GuardaTemporal(in)
 
 	if final == "Final" {
@@ -68,7 +68,7 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 		Cliente(in.NombreLibro, s.distr)
 	}
 
-	fmt.Println("Envia respuesta a cliente")
+	fmt.Println("DataNode envia respuesta a cliente")
 	return &connection.Message{Message: "Descargada\n"}, nil
 }
 
