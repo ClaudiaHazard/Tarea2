@@ -195,10 +195,28 @@ func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*c
 	return &connection.Message{Message: "Ok"}, nil
 }
 
+//TipoDistr para seleccionar el tipo de distribucion
+func TipoDistr() string {
+	var num int32
+	distr := ""
+
+	fmt.Println("Ingrese el numero correspondiente a la distribucion a utilizar: ")
+	fmt.Println("1. Distribuida")
+	fmt.Println("2. Centralizada")
+
+	fmt.Scanln(&num)
+
+	if num == 1 {
+		distr = "Distribuida"
+	} else {
+		distr = "Centralizada"
+	}
+
+	return distr
+}
+
 //Servidor ejecucion de servidor para NameNode
 func main() {
-	fmt.Println("Hello there!")
-
 	// Escucha las conexiones grpc
 	lis, err := net.Listen("tcp", ipportListen)
 
@@ -206,7 +224,7 @@ func main() {
 		log.Fatalf("Failed to listen on "+ipportListen+": %v", err)
 	}
 
-	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}, librosDisp: []string{}, distr: ""}
+	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}, librosDisp: []string{}, distr: TipoDistr()}
 
 	//Agrega el string ip de cada maquina
 	s.ipMaquinas[1] = ipportDataNode1
