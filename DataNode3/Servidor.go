@@ -167,7 +167,7 @@ func Servidor() {
 
 	grpcServer := grpc.NewServer()
 
-	fmt.Println("En espera de Informacion Chunks para servidor")
+	fmt.Println("En espera de Informacion Chunks o Download")
 
 	//Inicia el servicio de mensajeria que contiene las funciones grpc
 	connection.RegisterMensajeriaServiceServer(grpcServer, &s)
