@@ -328,7 +328,7 @@ func ConsultaUsoLogCentralizado(conn *grpc.ClientConn) *connection.Message {
 
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
-
+	fmt.Println("Consulta por el log")
 	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: "1"})
 
 	if err != nil {
@@ -345,9 +345,9 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		Distribucion := EnviaPropuestaDistribuida(conns, s.ChunksTemporal[nombreLibro], nombreLibro)
 		fmt.Println("Envia Chunks")
 		ReparteChunks(conns, nombreLibro, Distribucion)
-		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2006-01-02 15:04:05"))
+		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2017-08-26 22:12:31.3763932"))
 		ok := EnviaDistribucionDistribuida(conns, conn, Distribucion)
-		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2006-01-02 15:04:05"))
+		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2017-08-26 22:12:31.3763932"))
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
@@ -356,9 +356,9 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		Distribucion := EnviaPropuestaCentralizada(conn, s.ChunksTemporal[nombreLibro], nombreLibro)
 		fmt.Println("Envia Chunks")
 		ReparteChunks(conns, nombreLibro, Distribucion)
-		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2006-01-02 15:04:05"))
+		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2017-08-26 22:12:31.3763932"))
 		ok := EnviaDistribucionCentralizada(conn, Distribucion)
-		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2006-01-02 15:04:05"))
+		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2017-08-26 22:12:31.3763932"))
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}

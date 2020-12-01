@@ -328,7 +328,7 @@ func ConsultaUsoLogCentralizado(conn *grpc.ClientConn) *connection.Message {
 
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
-
+	fmt.Println("Consulta por el log")
 	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: "2"})
 
 	if err != nil {
