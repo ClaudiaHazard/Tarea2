@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"strconv"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
@@ -14,6 +13,7 @@ import (
 	"math/rand"
 	"os"
 	"sync"
+	"strconv"
 	//"bufio"
 )
 
@@ -57,29 +57,25 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 		partBuffer := make([]byte, partSize)
 		file.Read(partBuffer)
 		ch := HaceChunk(partBuffer, i+1, name, totalPartsNum) //nombre con formato incluido
-		println("Chunk hecho de libro ", name)
-		println("chunk numero ", i)
 		if seed == 0 {
-			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
+			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
 			response, err3 := c1.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 			fmt.Println(response)
-			fmt.Println("Enviado chunk n° ", i)
-			fmt.Println("de ", ch.NumeroPar)
+			fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 
 		} else if seed == 1 {
-			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
+			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar))+ "de Libro: " + name)
 			response, err3 := c2.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 			fmt.Println(response)
-			fmt.Println("Enviado chunk n° ", i)
-			fmt.Println("de ", ch.NumeroPar)
+			fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 
 		} else {
 			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
@@ -89,12 +85,11 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 				os.Exit(1)
 			}
 			fmt.Println(response)
-			fmt.Println("Enviado chunk n° ", i)
-			fmt.Println("de ", ch.NumeroPar)
+			fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 		}
 
 	}
-	fmt.Println(name, " terminó")
+	fmt.Println(name, " terminó de enviarse")
 	wg.Done()
 }
 
