@@ -262,12 +262,11 @@ func EnviaChunks(conn *grpc.ClientConn, chunk *connection.Chunk) *connection.Mes
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	response, err := c.EnviaChunkCliente(ctx, chunk)
+	response, err := c.EnviaChunkDataNode(ctx, chunk)
 
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
 	}
-
 	return response
 }
 
