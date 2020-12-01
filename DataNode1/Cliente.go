@@ -134,7 +134,7 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 
 	l := CreaPropuesta(listaChunks, listaNodos)
 
-	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
 	//Chequea que los otros 2 nodos acepten la propuesta
 	respuesta1 := ChequeaCaido(conns[0]).Message
@@ -147,7 +147,7 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 
 		l = CreaPropuesta(listaChunks, listaNodos)
 
-		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
 		//Chequea que el otro nodo acepte la propuesta
 		respuesta1 = ChequeaCaido(conns[1]).Message
@@ -162,7 +162,7 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 
 		l = CreaPropuesta(listaChunks, listaNodos)
 
-		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
 		//Chequea que el otro nodo acepte la propuesta
 		respuesta1 = ChequeaCaido(conns[0]).Message
@@ -177,7 +177,7 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 
 		l = CreaPropuesta(listaChunks, listaNodos)
 
-		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
 		return Distribucion
 	}
@@ -196,7 +196,7 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []*connection
 
 	l := CreaPropuesta(listaChunks, listaNodos)
 
-	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
 	response, err := c.EnviaPropuesta(ctx, Distribucion)
 
@@ -225,7 +225,7 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []*connection
 
 		l = CreaPropuesta(listaChunks, listaNodos)
 
-		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
 		response, err = c.EnviaPropuesta(ctx, Distribucion)
 
@@ -250,7 +250,7 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []*connection
 
 	l = CreaPropuesta(listaChunks, listaNodos)
 
-	Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l}
+	Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
 	return Distribucion
 }
@@ -345,6 +345,7 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		ReparteChunks(conns, nombreLibro, Distribucion)
 		fmt.Println("Envia distribucion")
 		ok := EnviaDistribucionDistribuida(conns, conn, Distribucion)
+		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
 	if distr == "Centralizada" {
@@ -354,6 +355,7 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		ReparteChunks(conns, nombreLibro, Distribucion)
 		fmt.Println("Envia distribucion")
 		ok := EnviaDistribucionCentralizada(conn, Distribucion)
+		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
 	return ""
