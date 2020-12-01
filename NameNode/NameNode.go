@@ -176,6 +176,8 @@ func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribuc
 		//defer wg.Done()
 		s.actual = ""
 	}
+
+	fmt.Println("Termina de escribir en el log")
 	return &connection.Message{Message: "Ok"}, nil
 }
 
