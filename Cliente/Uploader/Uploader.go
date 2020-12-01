@@ -10,11 +10,12 @@ import (
 	"google.golang.org/grpc"
 
 	"math"
-	"os"
 	"math/rand"
+	"os"
 	//"bufio"
 )
 
+//IP local 10.6.40.161
 const (
 	ipportNameNode  = "10.6.40.161:50051"
 	ipportDataNode1 = "10.6.40.162:50051"
@@ -23,15 +24,15 @@ const (
 )
 
 //HaceChunk hace un chunk en base a una parte de un archivo
-func HaceChunk(ch []byte, pos int32, n string,t int32) *connection.Chunk {
-	return &connection.Chunk{Chunk: ch, NChunk: pos, NombreLibro: n,NumeroPar:t} //nombre con formato incluido
+func HaceChunk(ch []byte, pos int32, n string, t int32) *connection.Chunk {
+	return &connection.Chunk{Chunk: ch, NChunk: pos, NombreLibro: n, NumeroPar: t} //nombre con formato incluido
 }
 
 //CreaChunks crea chunks de un libro.
 func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, conn3 *grpc.ClientConn) {
 
 	//elección de a donde enviar
-	seed:=rand.Intn(2)
+	seed := rand.Intn(2)
 	file, err := os.Open(name)
 	if err != nil {
 		fmt.Println(err)
@@ -44,15 +45,15 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 	// num de partes en que se dividirá
 	totalPartsNum := int32(math.Ceil(float64(fileSize) / float64(fileChunk)))
 	fmt.Printf("Splitting to %d pieces.\n", totalPartsNum)
-	c1:=connection.NewMensajeriaServiceClient(conn1)
-	c2:=connection.NewMensajeriaServiceClient(conn2)
-	c3:= connection.NewMensajeriaServiceClient(conn3)
+	c1 := connection.NewMensajeriaServiceClient(conn1)
+	c2 := connection.NewMensajeriaServiceClient(conn2)
+	c3 := connection.NewMensajeriaServiceClient(conn3)
 	for i := int32(0); i < totalPartsNum; i++ {
 		partSize := int(math.Min(fileChunk, float64(fileSize-int64(i*fileChunk))))
 		partBuffer := make([]byte, partSize)
 		file.Read(partBuffer)
-		ch := HaceChunk(partBuffer, i+1, name,totalPartsNum) //nombre con formato incluido)
-		if (seed==0){
+		ch := HaceChunk(partBuffer, i+1, name, totalPartsNum) //nombre con formato incluido)
+		if seed == 0 {
 			response, err3 := c1.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
@@ -60,7 +61,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 			}
 			fmt.Printf(response.Message)
 
-		} else if (seed==1){
+		} else if seed == 1 {
 			response, err3 := c2.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
@@ -68,7 +69,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 			}
 			fmt.Printf(response.Message)
 
-		}else {
+		} else {
 			response, err3 := c3.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
@@ -81,7 +82,6 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 	}
 	fmt.Printf("Archivo subido: ")
 }
-
 
 //Ejecucion de Uploader
 func main() {
@@ -109,7 +109,7 @@ func main() {
 
 	fmt.Println("Ingrese nombre de archivo a subir incluyendo formato (ej:ejemplo.pdf)")
 	fmt.Scanln(&na)
-	CreaChunks(na, connDN1,connDN2,connDN3)
-	fmt.Println(na," subido")		
+	CreaChunks(na, connDN1, connDN2, connDN3)
+	fmt.Println(na, " subido")
 
 }

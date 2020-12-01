@@ -6,12 +6,14 @@ import (
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
+	"os"
+
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
-	"os"
 	//"bufio"
 )
 
+//IP local 10.6.40.161
 const (
 	ipportNameNode  = "10.6.40.161:50051"
 	ipportDataNode1 = "10.6.40.162:50051"
@@ -19,22 +21,23 @@ const (
 	ipportDataNode3 = "10.6.40.164:50051"
 )
 
-//libros disponibles muestra libros disponibles en pantalla
-func LibrosDisponibles(conn *grpc.ClientConn){
-	mes:=&connection.Message{Message: "Consulta de libros"}
+//LibrosDisponibles muestra libros disponibles en pantalla
+func LibrosDisponibles(conn *grpc.ClientConn) {
+	mes := &connection.Message{Message: "Consulta de libros"}
 	c := connection.NewMensajeriaServiceClient(conn)
-	li, err := c.ConsultaLibrosDisponibles(context.Background(),mes)
+	li, err := c.ConsultaLibrosDisponibles(context.Background(), mes)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 	fmt.Println("Libros Disponibles:")
-	for j := 0; j < len(li.LibrosDisponibles); j++ {	
+	for j := 0; j < len(li.LibrosDisponibles); j++ {
 		fmt.Println(li.LibrosDisponibles[j])
 	}
 }
+
 //ArmaChunks arma archivo, luego de solicitar ubicación y obtener donde está cada chunk
-func ArmaChunks(name string, conn1 *grpc.ClientConn,conn2 *grpc.ClientConn,conn3 *grpc.ClientConn, connNN *grpc.ClientConn) {
+func ArmaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, conn3 *grpc.ClientConn, connNN *grpc.ClientConn) {
 	_, err := os.Create(name)
 
 	if err != nil {
@@ -56,16 +59,16 @@ func ArmaChunks(name string, conn1 *grpc.ClientConn,conn2 *grpc.ClientConn,conn3
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	c1:=connection.NewMensajeriaServiceClient(conn1)
-	c2:=connection.NewMensajeriaServiceClient(conn2)
-	c3:= connection.NewMensajeriaServiceClient(conn3)
+	c1 := connection.NewMensajeriaServiceClient(conn1)
+	c2 := connection.NewMensajeriaServiceClient(conn2)
+	c3 := connection.NewMensajeriaServiceClient(conn3)
 	var writePosition int64 = 0
 	for j := uint64(0); j < uint64(ubc.NumeroPar); j++ { //original
 		var newFileChunk *connection.Chunk
-		dl := &connection.DivisionLibro{NombreLibro: name,NChunk:int32(j +1)}
-		if (ubc.ListaDataNodesChunk[j]==1){
+		dl := &connection.DivisionLibro{NombreLibro: name, NChunk: int32(j + 1)}
+		if ubc.ListaDataNodesChunk[j] == 1 {
 			newFileChunk, err2 = c1.DescargaChunk(context.Background(), dl)
-		} else if (ubc.ListaDataNodesChunk[j]==2){
+		} else if ubc.ListaDataNodesChunk[j] == 2 {
 			newFileChunk, err2 = c2.DescargaChunk(context.Background(), dl)
 		} else {
 			newFileChunk, err2 = c3.DescargaChunk(context.Background(), dl)
@@ -125,8 +128,7 @@ func main() {
 	LibrosDisponibles(connNN)
 	fmt.Println("Ingrese nombre de archivo a descargar incluyendo formato (ej:ejemplo.pdf)")
 	fmt.Scanln(&na)
-	ArmaChunks(na,connDN1,connDN2,connDN3,connNN)
-	fmt.Println(na," descargado")				
-
+	ArmaChunks(na, connDN1, connDN2, connDN3, connNN)
+	fmt.Println(na, " descargado")
 
 }
