@@ -31,6 +31,10 @@ func TipoDistr() string {
 }
 
 func main() {
-	s = Server{id: 1, ChunksTemporal: map[string][]*connection.Chunk{}, distr: TipoDistr()}
+	s = Server{id: 1, ChunksTemporal: map[string][]*connection.Chunk{}, distr: TipoDistr(), ipMaquinas: map[int32]string{}}
+	//Agrega el string ip de cada maquina
+	s.ipMaquinas[1] = ipportDataNode1
+	s.ipMaquinas[2] = ipportDataNode2
+	s.ipMaquinas[3] = ipportDataNode3
 	Servidor()
 }

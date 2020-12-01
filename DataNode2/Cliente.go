@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"sync"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
@@ -18,6 +19,8 @@ const (
 	ipportDataNode2 = "10.6.40.163:50051"
 	ipportDataNode3 = "10.6.40.164:50051"
 )
+
+var wg2 sync.WaitGroup
 
 //CreaPropuesta crea propuesta de distribucion en los datanodes.
 func CreaPropuesta(Chunks []*connection.Chunk, Nodelist []int32) []int32 {
@@ -250,22 +253,39 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []*connection
 }
 
 //EnviaChunks envia chunks con la distribucion que fue aceptada previamente
-func EnviaChunks(conn *grpc.ClientConn) *connection.Message {
-	print("EnviaChunks")
+func EnviaChunks(conn *grpc.ClientConn, chunk *connection.Chunk) *connection.Message {
+	defer wg2.Done()
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	print("EnviaChunks")
-
-	response, err := c.EnviaChunkCliente(ctx, &connection.Chunk{})
-
-	print("EnviaChunks")
+	response, err := c.EnviaChunkCliente(ctx, chunk)
 
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
 	}
 
 	return response
+}
+
+//ReparteChunks envia los chunks a los datanodes correspondientes.
+func ReparteChunks(conns []*grpc.ClientConn, nombreLibro string, Distribucion *connection.Distribucion) {
+	for index, element := range Distribucion.ListaDataNodesChunk {
+		if element == 1 {
+			wg2.Add(1)
+			go EnviaChunks(conns[0], s.ChunksTemporal[nombreLibro][index])
+		}
+		if element == 2 {
+			wg2.Add(1)
+			GuardaChunk(s.ChunksTemporal[nombreLibro][index])
+			wg2.Done()
+		}
+		if element == 3 {
+			wg2.Add(1)
+			go EnviaChunks(conns[1], s.ChunksTemporal[nombreLibro][index])
+		}
+
+	}
+	wg2.Wait()
 }
 
 //ChequeaCaido envia aviso para saber si los datanode estan disponibles
@@ -303,12 +323,20 @@ func ConsultaUsoLog(conn *grpc.ClientConn) *connection.Message {
 func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *grpc.ClientConn, nombreLibro string, distr string) string {
 	conns := []*grpc.ClientConn{connDN1, connDN2}
 	if distr == "Distribuida" {
+		fmt.Println("Envia Propuesta de distribucion")
 		Distribucion := EnviaPropuestaDistribuida(conns, s.ChunksTemporal[nombreLibro], nombreLibro)
+		fmt.Println("Envia Chunks")
+		ReparteChunks(conns, nombreLibro, Distribucion)
+		fmt.Println("Envia distribucion")
 		ok := EnviaDistribucionDistribuida(conns, conn, Distribucion)
 		return ok.Message
 	}
 	if distr == "Centralizada" {
+		fmt.Println("Envia Propuesta de distribucion")
 		Distribucion := EnviaPropuestaCentralizada(conn, s.ChunksTemporal[nombreLibro], nombreLibro)
+		fmt.Println("Envia Chunks")
+		ReparteChunks(conns, nombreLibro, Distribucion)
+		fmt.Println("Envia distribucion")
 		ok := EnviaDistribucionCentralizada(conn, Distribucion)
 		return ok.Message
 	}
