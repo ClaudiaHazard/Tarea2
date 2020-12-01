@@ -45,6 +45,15 @@ func GuardaChunk(in *connection.Chunk) {
 	fmt.Println("Downloaded : ", fileName)
 }
 
+//GuardaTemporal guarda los chunks en archivo temporal.
+func GuardaTemporal(ch *connection.Chunk) string {
+	s.ChunksTemporal[ch.NombreLibro] = append(s.ChunksTemporal[ch.NombreLibro], ch)
+	if len(s.ChunksTemporal[ch.NombreLibro]) == int(ch.NumeroPar) {
+		return "Final"
+	}
+	return "No Final"
+}
+
 //EnviaChunkCliente no es necesaria en el NameNode
 func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 	parts := strings.Split(in.NombreLibro, ".")
@@ -60,6 +69,14 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 	ioutil.WriteFile(fileName, in.Chunk, os.ModeAppend)
 
 	fmt.Println("Downloaded : ", fileName)
+
+	final := GuardaTemporal(in)
+
+	if final == "Final" {
+		fmt.Println("Se recibio el Chunk final")
+		Cliente(in.NombreLibro, s.distr)
+	}
+
 	return &connection.Message{Message: "Descargada\n"}, nil
 }
 
