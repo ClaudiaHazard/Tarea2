@@ -173,7 +173,7 @@ func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribuc
 	EditaResigtro(s, in.NombreLibro, csvFile)
 	s.librosDisp = append(s.librosDisp, in.NombreLibro)
 	if s.distr == "Centralizada" {
-		defer wg.Done()
+		//defer wg.Done()
 		s.actual = ""
 	}
 	return &connection.Message{Message: "Ok"}, nil
@@ -196,10 +196,11 @@ func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*conn
 //ConsultaUsoLog consulta para utilizar el log
 func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*connection.Message, error) {
 	fmt.Println("Se esta consultando para acceder al log por el nodo " + in.Message)
-	if s.actual != "" {
-		wg.Wait()
+	for s.actual != "" {
+		//wg.Wait()
+		time.Sleep(500 * time.Millisecond)
 	}
-	wg.Add(1)
+	//wg.Add(1)
 	s.actual = in.Message
 
 	//println("Entro a la consulta: " + time.Now().Format("2006-01-02 15:04:05"))
