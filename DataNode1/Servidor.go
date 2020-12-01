@@ -64,7 +64,7 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 	final := GuardaTemporal(in)
 
 	if final == "Final" {
-		fmt.Println("Se recibio el Chunk final")
+		fmt.Println("Se recibio el Chunk final del libro " + in.NombreLibro + "-----------------------------------------------")
 		Cliente(in.NombreLibro, s.distr)
 	}
 
