@@ -314,7 +314,9 @@ func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 	s.timestamp = time.Now().Format("2017-08-26 22:12:31.3763932")
+	fmt.Println("Consulta por el log")
 	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
+	fmt.Println("Recibio respuesta del uso del log")
 	s.timestamp = ""
 	if err != nil {
 		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
@@ -329,7 +331,9 @@ func ConsultaUsoLogCentralizado(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: "3"})
+	fmt.Println("Consulta por el log")
+	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
+	fmt.Println("Recibio respuesta del uso del log")
 
 	if err != nil {
 		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)

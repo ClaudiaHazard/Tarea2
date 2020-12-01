@@ -313,8 +313,10 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
-	s.timestamp = time.Now().Format("2017-08-26 22:12:31.3763932")
+	s.timestamp = time.Now().Format("02/01/2006 03:04:05.000000 PM")
+	fmt.Println("Consulta por el log")
 	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
+	fmt.Println("Recibio respuesta del uso del log")
 	s.timestamp = ""
 	if err != nil {
 		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
@@ -329,8 +331,8 @@ func ConsultaUsoLogCentralizado(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 	fmt.Println("Consulta por el log")
-	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: "2"})
-
+	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
+	fmt.Println("Recibio respuesta del uso del log")
 	if err != nil {
 		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
 	}
@@ -345,9 +347,9 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		Distribucion := EnviaPropuestaDistribuida(conns, s.ChunksTemporal[nombreLibro], nombreLibro)
 		fmt.Println("Envia Chunks")
 		ReparteChunks(conns, nombreLibro, Distribucion)
-		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2017-08-26 22:12:31.3763932"))
+		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		ok := EnviaDistribucionDistribuida(conns, conn, Distribucion)
-		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2017-08-26 22:12:31.3763932"))
+		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
@@ -356,9 +358,9 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		Distribucion := EnviaPropuestaCentralizada(conn, s.ChunksTemporal[nombreLibro], nombreLibro)
 		fmt.Println("Envia Chunks")
 		ReparteChunks(conns, nombreLibro, Distribucion)
-		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2017-08-26 22:12:31.3763932"))
+		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		ok := EnviaDistribucionCentralizada(conn, Distribucion)
-		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("2017-08-26 22:12:31.3763932"))
+		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
