@@ -26,7 +26,7 @@ func TipoDistr() string {
 	} else {
 		distr = "Centralizada"
 	}
-
+	fmt.Println("Se utilizara la distribucion" + distr)
 	return distr
 }
 
