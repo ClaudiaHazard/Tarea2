@@ -13,6 +13,7 @@ import (
 	"math/rand"
 	"os"
 	"sync"
+	"strconv"
 	//"bufio"
 )
 
@@ -57,34 +58,34 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 		file.Read(partBuffer)
 		ch := HaceChunk(partBuffer, i+1, name, totalPartsNum) //nombre con formato incluido
 		if seed == 0 {
-			fmt.Println("Enviando chunk n° " + i + " de " + ch.NumeroPar + "de Libro: " + name)
+			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
 			response, err3 := c1.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 			fmt.Println(response)
-			fmt.Println("Enviado chunk n° " + i + " de " + ch.NumeroPar)
+			fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 
 		} else if seed == 1 {
-			fmt.Println("Enviando chunk n° " + i + "de " + ch.NumeroPar + "de Libro: " + name)
+			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar))+ "de Libro: " + name)
 			response, err3 := c2.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 			fmt.Println(response)
-			fmt.Println("Enviado chunk n° " + i + " de " + ch.NumeroPar)
+			fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 
 		} else {
-			fmt.Println("Enviando chunk n° " + i + "de " + ch.NumeroPar + "de Libro: " + name)
+			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
 			response, err3 := c3.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 			fmt.Println(response)
-			fmt.Println("Enviado chunk n° " + i + " de " + ch.NumeroPar)
+			fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 		}
 
 	}
