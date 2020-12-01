@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strconv"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
@@ -59,7 +60,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 		println("Chunk hecho de libro ", name)
 		println("chunk numero ", i)
 		if seed == 0 {
-			fmt.Println("Enviando chunk n° " + i + "de " + ch.NumeroPar + "de Libro: " + name)
+			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
 			response, err3 := c1.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
@@ -70,7 +71,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 			fmt.Println("de ", ch.NumeroPar)
 
 		} else if seed == 1 {
-			fmt.Println("Enviando chunk n° " + i + "de " + ch.NumeroPar + "de Libro: " + name)
+			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
 			response, err3 := c2.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
@@ -81,7 +82,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 			fmt.Println("de ", ch.NumeroPar)
 
 		} else {
-			fmt.Println("Enviando chunk n° " + i + "de " + ch.NumeroPar + "de Libro: " + name)
+			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
 			response, err3 := c3.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
