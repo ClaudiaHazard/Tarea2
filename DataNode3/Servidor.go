@@ -156,8 +156,8 @@ func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*conn
 //ConsultaUsoLog chequea que un nodo no este caido
 func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*connection.Message, error) {
 	fmt.Println("Se consulta por el uso del log")
-	MSTP, _ := time.Parse(in.Message, "2006-01-02 15:04:05")
-	timeSTP, _ := time.Parse(s.timestamp, "2006-01-02 15:04:05")
+	MSTP, _ := time.Parse(in.Message, "2017-08-26 22:12:31.3763932")
+	timeSTP, _ := time.Parse(s.timestamp, "2017-08-26 22:12:31.3763932")
 	for s.timestamp != "" && timeSTP.Before(MSTP) {
 		//wg.Wait()
 		time.Sleep(500 * time.Millisecond)

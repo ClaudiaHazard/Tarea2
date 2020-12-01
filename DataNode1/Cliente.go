@@ -313,7 +313,7 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
-	s.timestamp = time.Now().Format("2006-01-02 15:04:05")
+	s.timestamp = time.Now().Format("2017-08-26 22:12:31.3763932")
 	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
 	s.timestamp = ""
 	if err != nil {
