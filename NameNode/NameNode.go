@@ -41,6 +41,9 @@ const (
 	ipportDataNode1 = "10.6.40.162:50051"
 	ipportDataNode2 = "10.6.40.163:50051"
 	ipportDataNode3 = "10.6.40.164:50051"
+	ipDataNode1     = "10.6.40.162"
+	ipDataNode2     = "10.6.40.163"
+	ipDataNode3     = "10.6.40.164"
 )
 
 //CreaRegistro en el que escribira el NameNode.
@@ -243,9 +246,9 @@ func main() {
 	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}, librosDisp: []string{}, distr: TipoDistr(), actual: ""}
 
 	//Agrega el string ip de cada maquina
-	s.ipMaquinas[1] = ipportDataNode1
-	s.ipMaquinas[2] = ipportDataNode2
-	s.ipMaquinas[3] = ipportDataNode3
+	s.ipMaquinas[1] = ipDataNode1
+	s.ipMaquinas[2] = ipDataNode2
+	s.ipMaquinas[3] = ipDataNode3
 
 	grpcServer := grpc.NewServer()
 
