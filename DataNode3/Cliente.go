@@ -376,8 +376,8 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 func Cliente(nombreLibro string, distr string) {
 
 	var connNN *grpc.ClientConn
+	var connDN1 *grpc.ClientConn
 	var connDN2 *grpc.ClientConn
-	var connDN3 *grpc.ClientConn
 
 	//Se crean las conexiones con NameNode y los DataNodes
 	connNN, err := grpc.Dial(ipportNameNode, grpc.WithInsecure(), grpc.WithBlock())
