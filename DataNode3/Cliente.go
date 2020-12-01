@@ -381,8 +381,8 @@ func Cliente(nombreLibro string, distr string) {
 
 	//Se crean las conexiones con NameNode y los DataNodes
 	connNN, err := grpc.Dial(ipportNameNode, grpc.WithInsecure(), grpc.WithBlock())
-	connDN2, err2 := grpc.Dial(ipportDataNode2, grpc.WithInsecure(), grpc.WithBlock())
-	connDN3, err3 := grpc.Dial(ipportDataNode3, grpc.WithInsecure(), grpc.WithBlock())
+	connDN1, err2 := grpc.Dial(ipportDataNode1, grpc.WithInsecure(), grpc.WithBlock())
+	connDN2, err3 := grpc.Dial(ipportDataNode2, grpc.WithInsecure(), grpc.WithBlock())
 
 	if err != nil {
 		log.Fatalf("No se pudo conectar: %s", err)
@@ -396,6 +396,6 @@ func Cliente(nombreLibro string, distr string) {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
 
-	EjecutaCliente(connNN, connDN2, connDN3, nombreLibro, distr)
+	EjecutaCliente(connNN, connDN1, connDN2, nombreLibro, distr)
 
 }
