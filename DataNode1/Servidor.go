@@ -57,7 +57,7 @@ func GuardaTemporal(ch *connection.Chunk) string {
 	return "No Final"
 }
 
-//EnviaChunkCliente no es necesaria en el NameNode
+//EnviaChunkCliente recibe chunks del cliente
 func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 	parts := strings.Split(in.NombreLibro, ".")
 	fileName := parts[0] + strconv.Itoa(int(in.NChunk))
@@ -83,8 +83,9 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 	return &connection.Message{Message: "Descargada\n"}, nil
 }
 
-//EnviaChunkDataNode no es necesaria en el NameNode
+//EnviaChunkDataNode recibe chunks desde un datanode
 func (s *Server) EnviaChunkDataNode(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+	fmt.Println("Se guarda chunks en local")
 	GuardaChunk(in)
 	return &connection.Message{Message: "Guardado"}, nil
 }
@@ -97,6 +98,9 @@ func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.No
 
 //DescargaChunk cliente descarga un chunk de alguno de los datanodes
 func (s *Server) DescargaChunk(ctx context.Context, in *connection.DivisionLibro) (*connection.Chunk, error) {
+
+	fmt.Println("Cliente solicita Chunk " + strconv.Itoa(int(in.NChunk)))
+
 	pa := strings.Split(in.NombreLibro, ".")
 	fileopen := pa[0] + strconv.Itoa(int(in.NChunk))
 	newFileChunk, err := os.Open(fileopen)
@@ -151,6 +155,7 @@ func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*conn
 
 //ConsultaUsoLog chequea que un nodo no este caido
 func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*connection.Message, error) {
+	fmt.Println("Se consulta por el uso del log")
 	wg.Wait()
 	return &connection.Message{Message: "Ok"}, nil
 }

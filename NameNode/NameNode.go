@@ -146,7 +146,7 @@ func (s *Server) EnviaChunkDataNode(ctx context.Context, in *connection.Chunk) (
 
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
 func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.NombreLibro) (*connection.Distribucion, error) {
-
+	fmt.Println("Envia ubicacion de chunks")
 	return &connection.Distribucion{NombreLibro: in.NombreLibro, NumeroPar: s.log[in.NombreLibro].cantPar, ListaDataNodesChunk: s.log[in.NombreLibro].chunkpormaquina}, nil
 }
 
@@ -158,12 +158,15 @@ func (s *Server) DescargaChunk(ctx context.Context, in *connection.DivisionLibro
 
 //EnviaPropuesta en el caso de namenode recibe propuesta de distribucion rechaza o acepta y guarda dicha distribucion, en el caso que venga aceptada solo la guarda.
 func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
+	fmt.Println("Recibe propuesta")
 	m := AceptaPropuesta(in)
+	fmt.Println("Respuesta a propuesta:" + m)
 	return &connection.Message{Message: m}, nil
 }
 
 //EnviaDistribucion distribuye los chunks segun la propuesta aceptada en el caso de que sea centralizada se encarga de que nadie utilice el log al mismo tiempo.
 func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
+	fmt.Println("Recibe Distribucion y escribe en log")
 	s.log[in.NombreLibro] = book{cantPar: in.NumeroPar, chunkpormaquina: in.ListaDataNodesChunk}
 	EditaResigtro(s, in.NombreLibro, csvFile)
 	s.librosDisp = append(s.librosDisp, in.NombreLibro)
@@ -190,6 +193,7 @@ func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*conn
 
 //ConsultaUsoLog consulta para utilizar el log
 func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*connection.Message, error) {
+	fmt.Println("Se esta consultando para acceder al log por el nodo " + in.Message)
 	if s.actual != "" {
 		wg.Wait()
 	}
@@ -243,7 +247,7 @@ func main() {
 	//Crea el archivo de registro Log de NameNode
 	csvFile = CreaRegistro()
 
-	fmt.Println("En espera de Informacion Chunks para servidor")
+	fmt.Println("En espera de Informacion")
 
 	//Inicia el servicio de mensajeria que contiene las funciones grpc
 	connection.RegisterMensajeriaServiceServer(grpcServer, &s)
