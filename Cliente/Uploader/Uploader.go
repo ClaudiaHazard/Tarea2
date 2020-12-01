@@ -56,37 +56,40 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 		partBuffer := make([]byte, partSize)
 		file.Read(partBuffer)
 		ch := HaceChunk(partBuffer, i+1, name, totalPartsNum) //nombre con formato incluido
-		println("Chunk hecho de libro ",name)
-		println("chunk numero ",i)
+		println("Chunk hecho de libro ", name)
+		println("chunk numero ", i)
 		if seed == 0 {
+			fmt.Println("Enviando chunk n° " + i + "de " + ch.NumeroPar + "de Libro: " + name)
 			response, err3 := c1.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-                        fmt.Println(response)
-			fmt.Println("Enviado chunk n° ",i)
-			fmt.Println("de ",ch.NumeroPar)
+			fmt.Println(response)
+			fmt.Println("Enviado chunk n° ", i)
+			fmt.Println("de ", ch.NumeroPar)
 
 		} else if seed == 1 {
+			fmt.Println("Enviando chunk n° " + i + "de " + ch.NumeroPar + "de Libro: " + name)
 			response, err3 := c2.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-                        fmt.Println(response)
-			fmt.Println("Enviado chunk n° ",i)
-			fmt.Println("de ",ch.NumeroPar)
+			fmt.Println(response)
+			fmt.Println("Enviado chunk n° ", i)
+			fmt.Println("de ", ch.NumeroPar)
 
 		} else {
+			fmt.Println("Enviando chunk n° " + i + "de " + ch.NumeroPar + "de Libro: " + name)
 			response, err3 := c3.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
 			fmt.Println(response)
-			fmt.Println("Enviado chunk n° ",i)
-			fmt.Println("de ",ch.NumeroPar)
+			fmt.Println("Enviado chunk n° ", i)
+			fmt.Println("de ", ch.NumeroPar)
 		}
 
 	}
@@ -116,19 +119,18 @@ func main() {
 	if err3 != nil {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
-	nas:=[5]string{"2.pdf","Emma.pdf","Dracula.pdf","Test.pdf","Lab1.pdf"}
+	nas := [5]string{"2.pdf", "Emma.pdf", "Dracula.pdf", "Test.pdf", "Lab1.pdf"}
 
-
 	wg.Add(1)
-	go 	CreaChunks(nas[0], connDN1, connDN2, connDN3)
+	go CreaChunks(nas[0], connDN1, connDN2, connDN3)
 	wg.Add(1)
-	go 	CreaChunks(nas[1], connDN1, connDN2, connDN3)
+	go CreaChunks(nas[1], connDN1, connDN2, connDN3)
 	wg.Add(1)
-	go 	CreaChunks(nas[2], connDN1, connDN2, connDN3)
+	go CreaChunks(nas[2], connDN1, connDN2, connDN3)
 	wg.Add(1)
-	go 	CreaChunks(nas[3], connDN1, connDN2, connDN3)
+	go CreaChunks(nas[3], connDN1, connDN2, connDN3)
 	wg.Add(1)
-	go 	CreaChunks(nas[4], connDN1, connDN2, connDN3)
+	go CreaChunks(nas[4], connDN1, connDN2, connDN3)
 
 	wg.Wait()
 
