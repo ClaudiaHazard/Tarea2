@@ -53,6 +53,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 		partBuffer := make([]byte, partSize)
 		file.Read(partBuffer)
 		ch := HaceChunk(partBuffer, i+1, name, totalPartsNum) //nombre con formato incluido)
+		fmt.Println(ch.NumeroPar)
 		if seed == 0 {
 			response, err3 := c1.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {

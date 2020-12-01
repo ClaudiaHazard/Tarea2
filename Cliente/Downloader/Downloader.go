@@ -63,7 +63,8 @@ func ArmaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 	c2 := connection.NewMensajeriaServiceClient(conn2)
 	c3 := connection.NewMensajeriaServiceClient(conn3)
 	var writePosition int64 = 0
-	for j := uint64(0); j < uint64(ubc.NumeroPar); j++ { //original
+	fmt.Println(ubc.NumeroPar)	
+	for j := 0; j < int(ubc.NumeroPar); j++ { //original
 		var newFileChunk *connection.Chunk
 		dl := &connection.DivisionLibro{NombreLibro: name, NChunk: int32(j + 1)}
 		if ubc.ListaDataNodesChunk[j] == 1 {
