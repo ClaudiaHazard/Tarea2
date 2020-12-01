@@ -21,6 +21,7 @@ type Server struct {
 	ChunksTemporal map[string][]*connection.Chunk //string es el nombre del libro
 	distr          string
 	ipMaquinas     map[int32]string
+	timestamp      string
 }
 
 //IP local 10.6.40.162

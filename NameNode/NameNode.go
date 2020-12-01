@@ -30,6 +30,7 @@ type Server struct {
 	ipMaquinas map[int32]string
 	librosDisp []string
 	distr      string
+	actual     string
 }
 
 var csvFile *os.File
@@ -163,13 +164,13 @@ func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion
 
 //EnviaDistribucion distribuye los chunks segun la propuesta aceptada en el caso de que sea centralizada se encarga de que nadie utilice el log al mismo tiempo.
 func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
-	if s.distr == "Centralizada" {
-		defer s.mux.Unlock()
-		s.mux.Lock()
-	}
 	s.log[in.NombreLibro] = book{cantPar: in.NumeroPar, chunkpormaquina: in.ListaDataNodesChunk}
 	EditaResigtro(s, in.NombreLibro, csvFile)
 	s.librosDisp = append(s.librosDisp, in.NombreLibro)
+	if s.distr == "Centralizada" {
+		defer wg.Done()
+		s.actual = ""
+	}
 	return &connection.Message{Message: "Ok"}, nil
 }
 
@@ -187,11 +188,17 @@ func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*conn
 	return &connection.Message{Message: "Disponible"}, nil
 }
 
-//ConsultaUsoLog no es necesaria en el NameNode
+//ConsultaUsoLog consulta para utilizar el log
 func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*connection.Message, error) {
-	println("Entro a la consulta: " + time.Now().Format("2006-01-02 15:04:05"))
-	wg.Wait()
-	println("Termino: " + time.Now().Format("2006-01-02 15:04:05"))
+	if s.actual != "" {
+		wg.Wait()
+	}
+	wg.Add(1)
+	s.actual = in.Message
+
+	//println("Entro a la consulta: " + time.Now().Format("2006-01-02 15:04:05"))
+	//wg.Wait()
+	//println("Termino: " + time.Now().Format("2006-01-02 15:04:05"))
 	return &connection.Message{Message: "Ok"}, nil
 }
 
@@ -224,7 +231,7 @@ func main() {
 		log.Fatalf("Failed to listen on "+ipportListen+": %v", err)
 	}
 
-	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}, librosDisp: []string{}, distr: TipoDistr()}
+	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}, librosDisp: []string{}, distr: TipoDistr(), actual: ""}
 
 	//Agrega el string ip de cada maquina
 	s.ipMaquinas[1] = ipportDataNode1

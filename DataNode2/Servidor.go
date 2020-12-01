@@ -10,6 +10,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 	"google.golang.org/grpc"
@@ -20,6 +21,7 @@ type Server struct {
 	id             int
 	ChunksTemporal map[string][]*connection.Chunk //string es el nombre del libro
 	distr          string
+	timestamp      string
 }
 
 //IP local 10.6.40.163
@@ -148,7 +150,11 @@ func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*conn
 
 //ConsultaUsoLog chequea que un nodo no este caido
 func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*connection.Message, error) {
-	wg.Wait()
+	MSTP, _ := time.Parse(in.Message, "2006-01-02 15:04:05")
+	timeSTP, _ := time.Parse(s.timestamp, "2006-01-02 15:04:05")
+	if s.timestamp != "" && timeSTP.Before(MSTP) {
+		wg.Wait()
+	}
 	return &connection.Message{Message: "Ok"}, nil
 }
 

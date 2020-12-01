@@ -5,6 +5,7 @@ import (
 	"log"
 	"math/rand"
 	"sync"
+	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
@@ -84,9 +85,9 @@ func EnviaDistribucionDistribuida(conns []*grpc.ClientConn, conn *grpc.ClientCon
 
 	//Consulta a los otros datanode por el uso del log
 	wg.Add(1)
-	go ConsultaUsoLog(conns[0])
+	go ConsultaUsoLogDistribuido(conns[0])
 	wg.Add(1)
-	go ConsultaUsoLog(conns[1])
+	go ConsultaUsoLogDistribuido(conns[1])
 	wg.Wait()
 
 	wg.Add(1)
@@ -104,6 +105,8 @@ func EnviaDistribucionDistribuida(conns []*grpc.ClientConn, conn *grpc.ClientCon
 func EnviaDistribucionCentralizada(conn *grpc.ClientConn, Distribucion *connection.Distribucion) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
+
+	ConsultaUsoLogCentralizado(conn)
 
 	response, err := c.EnviaDistribucion(ctx, Distribucion)
 
@@ -304,18 +307,31 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 	return response
 }
 
-//ConsultaUsoLog envia aviso para saber si se puede utilizar el log
-func ConsultaUsoLog(conn *grpc.ClientConn) *connection.Message {
-
+//ConsultaUsoLogDistribuido envia aviso para saber si se puede utilizar el log
+func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
-
-	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: "Disponible?"})
-
+	s.timestamp = time.Now().Format("2006-01-02 15:04:05")
+	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
+	s.timestamp = ""
 	if err != nil {
 		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
 	}
 	defer wg.Done()
+	return response
+}
+
+//ConsultaUsoLogCentralizado envia aviso para saber si se puede utilizar el log
+func ConsultaUsoLogCentralizado(conn *grpc.ClientConn) *connection.Message {
+
+	c := connection.NewMensajeriaServiceClient(conn)
+	ctx := context.Background()
+
+	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: "3"})
+
+	if err != nil {
+		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
+	}
 	return response
 }
 
