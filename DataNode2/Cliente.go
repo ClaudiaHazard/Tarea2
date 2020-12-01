@@ -368,6 +368,4 @@ func Cliente(nombreLibro string, distr string) {
 	}
 
 	EjecutaCliente(connNN, connDN1, connDN3, nombreLibro, distr)
-
-	wg.Done()
 }
