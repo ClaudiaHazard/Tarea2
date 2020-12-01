@@ -12,8 +12,11 @@ import (
 	"math"
 	"math/rand"
 	"os"
+	"sync"
 	//"bufio"
 )
+
+var wg sync.WaitGroup
 
 //IP local 10.6.40.161
 const (
@@ -32,7 +35,8 @@ func HaceChunk(ch []byte, pos int32, n string, t int32) *connection.Chunk {
 func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, conn3 *grpc.ClientConn) {
 
 	//elección de a donde enviar
-	seed := rand.Intn(2)
+	seed := rand.Intn(3)
+	fmt.Println(seed)
 	file, err := os.Open(name)
 	if err != nil {
 		fmt.Println(err)
@@ -82,6 +86,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 
 	}
 	fmt.Printf("Archivo subido: ")
+	wg.Done()
 }
 
 //Ejecucion de Uploader
@@ -106,11 +111,20 @@ func main() {
 	if err3 != nil {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
-	var na string
+	var nas:=["2.pdf","Emma.pdf","Dracula.pdf","Test.pdf","Lab1.pdf"]
 
-	fmt.Println("Ingrese nombre de archivo a subir incluyendo formato (ej:ejemplo.pdf)")
-	fmt.Scanln(&na)
-	CreaChunks(na, connDN1, connDN2, connDN3)
-	fmt.Println(na, " subido")
+
+	wg.Add(1)
+	go 	CreaChunks(nas[0], connDN1, connDN2, connDN3)
+	wg.Add(1)
+	go 	CreaChunks(nas[1], connDN1, connDN2, connDN3)
+	wg.Add(1)
+	go 	CreaChunks(nas[2], connDN1, connDN2, connDN3)
+	wg.Add(1)
+	go 	CreaChunks(nas[3], connDN1, connDN2, connDN3)
+	wg.Add(1)
+	go 	CreaChunks(nas[4], connDN1, connDN2, connDN3)
+
+	wg.Wait()
 
 }
