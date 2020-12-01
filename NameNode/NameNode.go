@@ -147,6 +147,7 @@ func (s *Server) EnviaChunkDataNode(ctx context.Context, in *connection.Chunk) (
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
 func (s *Server) ConsultaUbicacionArchivo(ctx context.Context, in *connection.NombreLibro) (*connection.Distribucion, error) {
 	fmt.Println("Envia ubicacion de chunks")
+	fmt.Println("Numero Particiones: ")
 	return &connection.Distribucion{NombreLibro: in.NombreLibro, NumeroPar: s.log[in.NombreLibro].cantPar, ListaDataNodesChunk: s.log[in.NombreLibro].chunkpormaquina}, nil
 }
 
@@ -168,6 +169,7 @@ func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion
 func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
 	fmt.Println("Recibe Distribucion y escribe en log")
 	s.log[in.NombreLibro] = book{cantPar: in.NumeroPar, chunkpormaquina: in.ListaDataNodesChunk}
+
 	EditaResigtro(s, in.NombreLibro, csvFile)
 	s.librosDisp = append(s.librosDisp, in.NombreLibro)
 	if s.distr == "Centralizada" {

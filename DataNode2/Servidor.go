@@ -44,7 +44,7 @@ func GuardaChunk(in *connection.Chunk) {
 	// write/save buffer to disk
 	ioutil.WriteFile(fileName, in.Chunk, os.ModeAppend)
 
-	fmt.Println("Downloaded : ", fileName)
+	fmt.Println("Descarga Chunk recibido por DataNode : ", fileName)
 
 }
 
@@ -71,7 +71,7 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 	// write/save buffer to disk
 	ioutil.WriteFile(fileName, in.Chunk, os.ModeAppend)
 
-	fmt.Println("Downloaded : ", fileName)
+	fmt.Println("Recibe del cliente: ", fileName)
 
 	final := GuardaTemporal(in)
 

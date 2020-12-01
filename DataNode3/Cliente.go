@@ -339,21 +339,21 @@ func ConsultaUsoLogCentralizado(conn *grpc.ClientConn) *connection.Message {
 func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *grpc.ClientConn, nombreLibro string, distr string) string {
 	conns := []*grpc.ClientConn{connDN1, connDN2}
 	if distr == "Distribuida" {
-		fmt.Println("Envia Propuesta de distribucion")
+		fmt.Println("Envia Propuesta de distribucion para el libro: " + nombreLibro)
 		Distribucion := EnviaPropuestaDistribuida(conns, s.ChunksTemporal[nombreLibro], nombreLibro)
 		fmt.Println("Envia Chunks")
 		ReparteChunks(conns, nombreLibro, Distribucion)
-		fmt.Println("Envia distribucion")
+		fmt.Println("Envia distribucion para el libro: " + nombreLibro)
 		ok := EnviaDistribucionDistribuida(conns, conn, Distribucion)
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
 	if distr == "Centralizada" {
-		fmt.Println("Envia Propuesta de distribucion")
+		fmt.Println("Envia Propuesta de distribucion para el libro: " + nombreLibro)
 		Distribucion := EnviaPropuestaCentralizada(conn, s.ChunksTemporal[nombreLibro], nombreLibro)
 		fmt.Println("Envia Chunks")
 		ReparteChunks(conns, nombreLibro, Distribucion)
-		fmt.Println("Envia distribucion")
+		fmt.Println("Envia distribucion para el libro: " + nombreLibro)
 		ok := EnviaDistribucionCentralizada(conn, Distribucion)
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
