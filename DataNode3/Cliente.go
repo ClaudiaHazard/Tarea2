@@ -276,6 +276,7 @@ func ReparteChunks(conns []*grpc.ClientConn, nombreLibro string, Distribucion *c
 
 	}
 	wg2.Wait()
+	wg.Done()
 }
 
 //EnviaChunks envia chunks con la distribucion que fue aceptada previamente
@@ -305,7 +306,7 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 		return &connection.Message{Message: "Caido"}
 	}
 
-	print(response.Message)
+	fmt.Println(response.Message)
 	return response
 }
 
@@ -348,7 +349,9 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		fmt.Println("Envia Propuesta de distribucion para el libro: " + nombreLibro)
 		Distribucion := EnviaPropuestaDistribuida(conns, s.ChunksTemporal[nombreLibro], nombreLibro)
 		fmt.Println("Envia Chunks")
+		wg.Add(1)
 		ReparteChunks(conns, nombreLibro, Distribucion)
+		wg.Wait()
 		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		ok := EnviaDistribucionDistribuida(conns, conn, Distribucion)
 		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))

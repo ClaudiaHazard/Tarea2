@@ -65,7 +65,7 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 
 	if final == "Final" {
 		fmt.Println("Se recibio el Chunk final del libro " + in.NombreLibro + "-----------------------------------------------")
-		Cliente(in.NombreLibro, s.distr)
+		go Cliente(in.NombreLibro, s.distr)
 	}
 
 	fmt.Println("DataNode envia respuesta a cliente")
