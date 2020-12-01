@@ -36,7 +36,6 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 
 	//elección de a donde enviar
 	seed := rand.Intn(3)
-	fmt.Println(seed)
 	file, err := os.Open(name)
 	if err != nil {
 		fmt.Println(err)
@@ -56,15 +55,18 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 		partSize := int(math.Min(fileChunk, float64(fileSize-int64(i*fileChunk))))
 		partBuffer := make([]byte, partSize)
 		file.Read(partBuffer)
-		ch := HaceChunk(partBuffer, i+1, name, totalPartsNum) //nombre con formato incluido)
-		fmt.Println(ch.NumeroPar)
+		ch := HaceChunk(partBuffer, i+1, name, totalPartsNum) //nombre con formato incluido
+		println("Chunk hecho de libro ",name)
+		println("chunk numero ",i)
 		if seed == 0 {
 			response, err3 := c1.EnviaChunkCliente(context.Background(), ch)
 			if err3 != nil {
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			fmt.Printf(response.Message)
+                        fmt.Println(response)
+			fmt.Println("Enviado chunk n° ",i)
+			fmt.Println("de ",ch.NumeroPar)
 
 		} else if seed == 1 {
 			response, err3 := c2.EnviaChunkCliente(context.Background(), ch)
@@ -72,7 +74,9 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			fmt.Printf(response.Message)
+                        fmt.Println(response)
+			fmt.Println("Enviado chunk n° ",i)
+			fmt.Println("de ",ch.NumeroPar)
 
 		} else {
 			response, err3 := c3.EnviaChunkCliente(context.Background(), ch)
@@ -80,12 +84,13 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 				fmt.Println(err)
 				os.Exit(1)
 			}
-			fmt.Printf(response.Message)
-
+			fmt.Println(response)
+			fmt.Println("Enviado chunk n° ",i)
+			fmt.Println("de ",ch.NumeroPar)
 		}
 
 	}
-	fmt.Printf("Archivo subido: ")
+	fmt.Println(name, " terminó")
 	wg.Done()
 }
 
@@ -111,7 +116,7 @@ func main() {
 	if err3 != nil {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
-	var nas:=["2.pdf","Emma.pdf","Dracula.pdf","Test.pdf","Lab1.pdf"]
+	nas:=[5]string{"2.pdf","Emma.pdf","Dracula.pdf","Test.pdf","Lab1.pdf"}
 
 
 	wg.Add(1)
