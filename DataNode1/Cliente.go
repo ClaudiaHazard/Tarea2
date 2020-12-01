@@ -85,6 +85,7 @@ func EnviaDistribucionDistribuida(conns []*grpc.ClientConn, conn *grpc.ClientCon
 	ctx := context.Background()
 
 	//Consulta a los otros datanode por el uso del log
+
 	wg.Add(1)
 	go ConsultaUsoLogDistribuido(conns[0])
 	wg.Add(1)
@@ -276,15 +277,18 @@ func ReparteChunks(conns []*grpc.ClientConn, nombreLibro string, Distribucion *c
 	for index, element := range Distribucion.ListaDataNodesChunk {
 		fmt.Println("Envia Chunks a DataNode " + strconv.Itoa(int(element)))
 		if element == 1 {
+			fmt.Println("EnviaItself")
 			wg2.Add(1)
 			GuardaChunk(s.ChunksTemporal[nombreLibro][index])
 			wg2.Done()
 		}
 		if element == 2 {
+			fmt.Println("EnviaAotro")
 			wg2.Add(1)
 			go EnviaChunks(conns[0], s.ChunksTemporal[nombreLibro][index])
 		}
 		if element == 3 {
+			fmt.Println("EnviaAotro")
 			wg2.Add(1)
 			go EnviaChunks(conns[1], s.ChunksTemporal[nombreLibro][index])
 		}
@@ -319,7 +323,7 @@ func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
 	if err != nil {
 		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
 	}
-	//defer wg.Done()
+	defer wg.Done()
 	return response
 }
 

@@ -305,7 +305,7 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 		return &connection.Message{Message: "Caido"}
 	}
 
-	print(response.Message)
+	fmt.Println(response.Message)
 	return response
 }
 
