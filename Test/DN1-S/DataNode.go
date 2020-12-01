@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"math/rand"
 	"net"
 	"os"
 	"strconv"
@@ -33,15 +32,6 @@ const (
 )
 
 var wg sync.WaitGroup
-
-//AceptaPropuesta acepta o rechaza la propuesta con cierta probablidad.
-func AceptaPropuesta() string {
-	n := rand.Float64()
-	if n < 0.8 {
-		return "SI"
-	}
-	return "NO"
-}
 
 //GuardaChunk guarda el chunk en archivo.
 func GuardaChunk(in *connection.Chunk) {

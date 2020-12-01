@@ -29,16 +29,17 @@ type Server struct {
 	log        map[string]book // string es el nombre del libro
 	ipMaquinas map[int32]string
 	librosDisp []string
+	distr      string
 }
 
 var csvFile *os.File
 
 const (
 	ipportListen    = ":50051"
+	ipportNameNode  = "10.6.40.161:50051"
 	ipportDataNode1 = "10.6.40.162:50051"
 	ipportDataNode2 = "10.6.40.163:50051"
 	ipportDataNode3 = "10.6.40.164:50051"
-	probabilidad    = 0.8
 )
 
 //CreaRegistro en el que escribira el NameNode.
@@ -154,10 +155,12 @@ func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion
 	return &connection.Message{Message: m}, nil
 }
 
-//EnviaDistribucion distribuye los chunks segun la propuesta aceptada
+//EnviaDistribucion distribuye los chunks segun la propuesta aceptada en el caso de que sea centralizada se encarga de que nadie utilice el log al mismo tiempo.
 func (s *Server) EnviaDistribucion(ctx context.Context, in *connection.Distribucion) (*connection.Message, error) {
-	defer s.mux.Unlock()
-	s.mux.Lock()
+	if s.distr == "Centralizada" {
+		defer s.mux.Unlock()
+		s.mux.Lock()
+	}
 	s.log[in.NombreLibro] = book{cantPar: in.NumeroPar, chunkpormaquina: in.ListaDataNodesChunk}
 	EditaResigtro(s, in.NombreLibro, csvFile)
 	s.librosDisp = append(s.librosDisp, in.NombreLibro)
@@ -197,7 +200,7 @@ func main() {
 		log.Fatalf("Failed to listen on "+ipportListen+": %v", err)
 	}
 
-	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}, librosDisp: []string{}}
+	s := Server{id: 1, mux: &sync.Mutex{}, log: map[string]book{}, ipMaquinas: map[int32]string{}, librosDisp: []string{}, distr: ""}
 
 	//Agrega el string ip de cada maquina
 	s.ipMaquinas[1] = ipportDataNode1
