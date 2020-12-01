@@ -59,7 +59,7 @@ func GuardaTemporal(ch *connection.Chunk) string {
 
 //EnviaChunkCliente recibe chunks del cliente
 func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
-	fmt.Println("Recibe del cliente: ", fileName)
+	fmt.Println("Recibe del cliente:")
 
 	parts := strings.Split(in.NombreLibro, ".")
 	fileName := parts[0] + strconv.Itoa(int(in.NChunk))

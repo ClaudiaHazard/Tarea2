@@ -60,6 +60,8 @@ func GuardaTemporal(ch *connection.Chunk) string {
 
 //EnviaChunkCliente recibe chunks del cliente
 func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
+	fmt.Println("Recibe del cliente:")
+
 	parts := strings.Split(in.NombreLibro, ".")
 	fileName := parts[0] + strconv.Itoa(int(in.NChunk))
 	_, err := os.Create(fileName)
@@ -72,8 +74,6 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 	// write/save buffer to disk
 	ioutil.WriteFile(fileName, in.Chunk, os.ModeAppend)
 
-	fmt.Println("Recibe del cliente: ", fileName)
-
 	final := GuardaTemporal(in)
 
 	if final == "Final" {
@@ -81,6 +81,7 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 		Cliente(in.NombreLibro, s.distr)
 	}
 
+	fmt.Println("Envia respuesta a cliente: ", fileName)
 	return &connection.Message{Message: "Descargada\n"}, nil
 }
 
