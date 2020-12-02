@@ -400,26 +400,5 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 //Cliente Ejecucion de DataNode Cliente
 func Cliente(nombreLibro string, distr string) {
 
-	var connNN *grpc.ClientConn
-	var connDN1 *grpc.ClientConn
-	var connDN3 *grpc.ClientConn
-
-	//Se crean las conexiones con NameNode y los DataNodes
-	connNN, err := grpc.Dial(ipportNameNode, grpc.WithInsecure(), grpc.WithBlock())
-	connDN1, err2 := grpc.Dial(ipportDataNode1, grpc.WithInsecure(), grpc.WithBlock())
-	connDN3, err3 := grpc.Dial(ipportDataNode3, grpc.WithInsecure(), grpc.WithBlock())
-
-	if err != nil {
-		log.Fatalf("No se pudo conectar: %s", err)
-	}
-
-	if err2 != nil {
-		log.Fatalf("No se pudo conectar: %s", err)
-	}
-
-	if err3 != nil {
-		log.Fatalf("No se pudo conectar: %s", err)
-	}
-
 	EjecutaCliente(connNN, connDN1, connDN3, nombreLibro, distr)
 }
