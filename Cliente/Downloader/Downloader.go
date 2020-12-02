@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"strconv"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
@@ -51,10 +52,8 @@ func ArmaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 		os.Exit(1)
 	}
 	nl := &connection.NombreLibro{NombreLibro: name}
-	//SOLICITAR UBICACIONES
 	c := connection.NewMensajeriaServiceClient(connNN)
 	ubc, err2 := c.ConsultaUbicacionArchivo(context.Background(), nl)
-
 	if err2 != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -63,7 +62,6 @@ func ArmaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 	c2 := connection.NewMensajeriaServiceClient(conn2)
 	c3 := connection.NewMensajeriaServiceClient(conn3)
 	var writePosition int64 = 0
-	fmt.Println(ubc.NumeroPar)	
 	for j := 0; j < int(ubc.NumeroPar); j++ { //original
 		var newFileChunk *connection.Chunk
 		dl := &connection.DivisionLibro{NombreLibro: name, NChunk: int32(j + 1)}
@@ -79,19 +77,16 @@ func ArmaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 			fmt.Println(err)
 			os.Exit(1)
 		}
-
 		var chunkSize int64 = int64(len(newFileChunk.Chunk))
-		fmt.Println("Appending at position : [", writePosition, "] bytes")
+		fmt.Println("Agregando " +strconv.Itoa(int(j + 1)) + " parte de " + strconv.Itoa(int(newFileChunk.NumeroPar))+ "para archivo " + name)
 		writePosition = writePosition + chunkSize
-
 		n, err := file.Write(newFileChunk.Chunk)
+		n=n + 0
 		if err != nil {
 			fmt.Println(err)
 			os.Exit(1)
 		}
 		file.Sync()
-		fmt.Println("Written ", n, " bytes")
-		fmt.Println("Recombining part [", j, "] into : ", name)
 	}
 	file.Close()
 }
