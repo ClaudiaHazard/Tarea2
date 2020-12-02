@@ -140,7 +140,9 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 
 	//Chequea que los otros 2 nodos acepten la propuesta
 	respuesta1 := ChequeaCaido(conns[0]).Message
+	fmt.Println("Respuesta datanode: " + respuesta1)
 	respuesta2 := ChequeaCaido(conns[1]).Message
+	fmt.Println("Respuesta datanode: " + respuesta2)
 
 	if respuesta1 == "Caido" && respuesta2 != "Caido" {
 		listaNodos = []int32{1, 3}
@@ -312,11 +314,6 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 	timeout := make(chan bool, 1)
 
 	go func() {
-		time.Sleep(2 * time.Second)
-		timeout <- true
-	}()
-
-	go func() {
 		response, err := c.ChequeoPing(ctx, &connection.Message{Message: "Disponible?"})
 		if err != nil {
 			fmt.Println("Error de conexion con el DataNode, puede que este caido")
@@ -324,6 +321,11 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 		} else {
 			res <- response.Message
 		}
+	}()
+
+	go func() {
+		time.Sleep(2 * time.Second)
+		timeout <- true
 	}()
 
 	select {

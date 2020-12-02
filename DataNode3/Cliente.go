@@ -137,9 +137,10 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 	fmt.Println(l)
 	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
-	//Chequea que los otros 2 nodos acepten la propuesta
 	respuesta1 := ChequeaCaido(conns[0]).Message
+	fmt.Println("Respuesta datanode: " + respuesta1)
 	respuesta2 := ChequeaCaido(conns[1]).Message
+	fmt.Println("Respuesta datanode: " + respuesta2)
 
 	if respuesta1 == "Caido" && respuesta2 != "Caido" {
 		//listaNodos = []int32{1, 3}
