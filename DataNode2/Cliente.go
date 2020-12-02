@@ -95,7 +95,7 @@ func EnviaDistribucionDistribuida(conns []*grpc.ClientConn, conn *grpc.ClientCon
 	response, err := c.EnviaDistribucion(ctx, Distribucion)
 
 	if err != nil {
-		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
+		log.Fatalf("Error al llamar EnviaDistribucion: %s", err)
 	}
 
 	return response
@@ -111,7 +111,7 @@ func EnviaDistribucionCentralizada(conn *grpc.ClientConn, Distribucion *connecti
 	response, err := c.EnviaDistribucion(ctx, Distribucion)
 
 	if err != nil {
-		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
+		log.Fatalf("Error al llamar EnviaDistribucion: %s", err)
 	}
 
 	return response
@@ -206,7 +206,7 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []*connection
 	response, err := c.EnviaPropuesta(ctx, Distribucion)
 
 	if err != nil {
-		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
+		fmt.Println("Error al llamar EnviaPropuesta")
 	}
 
 	if response.Message == "SI" {
@@ -236,7 +236,7 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []*connection
 		response, err = c.EnviaPropuesta(ctx, Distribucion)
 
 		if err != nil {
-			log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
+			fmt.Println("Error al llamar EnviaPropuesta")
 		}
 		if response.Message == "SI" {
 			return Distribucion
@@ -271,7 +271,7 @@ func EnviaChunks(conn *grpc.ClientConn, chunk *connection.Chunk) *connection.Mes
 	response, err := c.EnviaChunkDataNode(ctx, chunk)
 
 	if err != nil {
-		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
+		log.Fatalf("Error al llamar EnviaChunkDataNode: %s", err)
 	}
 	return response
 }
