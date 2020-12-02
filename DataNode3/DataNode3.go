@@ -65,6 +65,5 @@ func main() {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
 
-	fmt.Println("Hola")
 	wgInf.Wait()
 }
