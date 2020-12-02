@@ -21,6 +21,15 @@ type book struct {
 }
 
 var wg sync.WaitGroup
+var wgInf sync.WaitGroup
+
+var connDN1 *grpc.ClientConn
+var connDN2 *grpc.ClientConn
+var connDN3 *grpc.ClientConn
+
+var err error
+var err2 error
+var err3 error
 
 //Server datos
 type Server struct {
@@ -105,17 +114,17 @@ func AceptaPropuesta(prop *connection.Distribucion) string {
 	p3 := false
 	for _, element := range l {
 		if element == 1 {
-			if ChequeaNodos(ipportDataNode1) != "Caido" {
+			if ChequeaNodos(connDN1) != "Caido" {
 				p1 = true
 			}
 		}
 		if element == 2 {
-			if ChequeaNodos(ipportDataNode2) != "Caido" {
+			if ChequeaNodos(connDN2) != "Caido" {
 				p2 = true
 			}
 		}
 		if element == 3 {
-			if ChequeaNodos(ipportDataNode3) != "Caido" {
+			if ChequeaNodos(connDN3) != "Caido" {
 				p3 = true
 			}
 		}
@@ -234,8 +243,7 @@ func TipoDistr() string {
 	return distr
 }
 
-//Servidor ejecucion de servidor para NameNode
-func main() {
+func openServer() {
 	// Escucha las conexiones grpc
 	lis, err := net.Listen("tcp", ipportListen)
 
@@ -263,4 +271,31 @@ func main() {
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve gRPC server over "+ipportListen+": %v", err)
 	}
+	wgInf.Done()
+}
+
+//Servidor ejecucion de servidor para NameNode
+func main() {
+
+	wgInf.Add(1)
+	go openServer()
+
+	//Se crean las conexiones con NameNode y los DataNodes
+	connDN1, err = grpc.Dial(ipportDataNode1, grpc.WithInsecure(), grpc.WithBlock())
+	connDN2, err2 = grpc.Dial(ipportDataNode2, grpc.WithInsecure(), grpc.WithBlock())
+	connDN3, err3 = grpc.Dial(ipportDataNode3, grpc.WithInsecure(), grpc.WithBlock())
+
+	if err != nil {
+		log.Fatalf("No se pudo conectar: %s", err)
+	}
+
+	if err2 != nil {
+		log.Fatalf("No se pudo conectar: %s", err)
+	}
+
+	if err3 != nil {
+		log.Fatalf("No se pudo conectar: %s", err)
+	}
+
+	wgInf.Wait()
 }

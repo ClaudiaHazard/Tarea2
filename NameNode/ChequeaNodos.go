@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
@@ -45,16 +44,7 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 }
 
 //ChequeaNodos chequea que el nodo no este caido
-func ChequeaNodos(ipport string) string {
-
-	var conn *grpc.ClientConn
-
-	//Se crean las conexiones con NameNode y los DataNodes
-	conn, err := grpc.Dial(ipport, grpc.WithInsecure(), grpc.WithBlock())
-
-	if err != nil {
-		log.Fatalf("No se pudo conectar: %s", err)
-	}
+func ChequeaNodos(conn *grpc.ClientConn) string {
 
 	return ChequeaCaido(conn).Message
 
