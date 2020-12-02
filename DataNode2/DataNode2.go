@@ -31,6 +31,9 @@ var TiempoTotalEscribirLog time.Duration
 //ChequeoCaidos cantidad de chequeoscaido.
 var ChequeoCaidos int
 
+//LibrosRecibidos cantidad de libros.
+var LibrosRecibidos int
+
 var mutex *sync.Mutex
 
 //TipoDistr para seleccionar el tipo de distribucion
@@ -60,6 +63,7 @@ func main() {
 	mutex = &sync.Mutex{}
 	MensajesEnviadosTotal = 0
 	ChequeoCaidos = 0
+	LibrosRecibidos = 0
 
 	wgInf.Add(1)
 	go Servidor()

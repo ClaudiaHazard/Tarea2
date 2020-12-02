@@ -478,4 +478,6 @@ func Cliente(nombreLibro string, distr string) {
 	fmt.Println("Mensajes enviados: ", MensajesEnviadosTotal)
 	fmt.Println("Tiempo total usado para escribir en log: ", TiempoTotalEscribirLog.Seconds())
 	fmt.Println("Chequeos enviados: ", ChequeoCaidos)
+	LibrosRecibidos = LibrosRecibidos + 1
+	fmt.Println("Libros recibidos: ", LibrosRecibidos)
 }
