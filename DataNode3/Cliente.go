@@ -91,8 +91,10 @@ func EnviaDistribucionDistribuida(conns []*grpc.ClientConn, conn *grpc.ClientCon
 	go ConsultaUsoLogDistribuido(conns[1])
 	wg.Wait()
 
-	fmt.Println("Envia Distribucion al log")
+	wg.Add(1)
+	fmt.Println("Escribe en el log")
 	response, err := c.EnviaDistribucion(ctx, Distribucion)
+	wg.Done()
 
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
@@ -108,6 +110,7 @@ func EnviaDistribucionCentralizada(conn *grpc.ClientConn, Distribucion *connecti
 
 	ConsultaUsoLogCentralizado(conn)
 
+	fmt.Println("Escribe en el log")
 	response, err := c.EnviaDistribucion(ctx, Distribucion)
 
 	if err != nil {
@@ -138,9 +141,9 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
 	respuesta1 := ChequeaCaido(conns[0]).Message
-	fmt.Println("Respuesta datanode: " + respuesta1)
+	//fmt.Println("Respuesta datanode: " + respuesta1)
 	respuesta2 := ChequeaCaido(conns[1]).Message
-	fmt.Println("Respuesta datanode: " + respuesta2)
+	//fmt.Println("Respuesta datanode: " + respuesta2)
 
 	if respuesta1 == "Caido" && respuesta2 != "Caido" {
 		//listaNodos = []int32{1, 3}
@@ -348,9 +351,9 @@ func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
 		c := connection.NewMensajeriaServiceClient(conn)
 		ctx := context.Background()
 		s.timestamp = time.Now().Format("02/01/2006 03:04:05.000000 PM")
-		fmt.Println("Consulta por el log")
+		fmt.Println("Consulta para utilizar el log " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		response, err = c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
-		fmt.Println("Recibio respuesta del uso del log")
+		fmt.Println("Recibe respuesta para el uso del log " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		s.timestamp = ""
 		if err != nil {
 			log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
@@ -366,9 +369,9 @@ func ConsultaUsoLogCentralizado(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	fmt.Println("Consulta por el log")
+	fmt.Println("Consulta para utilizar el log " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
-	fmt.Println("Recibio respuesta del uso del log")
+	fmt.Println("Recibe respuesta para el uso del log " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 
 	if err != nil {
 		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
@@ -382,7 +385,7 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 	if distr == "Distribuida" {
 		fmt.Println("Envia Propuesta de distribucion para el libro: " + nombreLibro)
 		Distribucion := EnviaPropuestaDistribuida(conns, s.ChunksTemporal[nombreLibro], nombreLibro)
-		fmt.Println("Envia Chunks")
+		fmt.Println("Guarda y envia Chunks a otros DataNode")
 		ReparteChunks(conns, nombreLibro, Distribucion)
 		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		ok := EnviaDistribucionDistribuida(conns, conn, Distribucion)
@@ -393,7 +396,7 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 	if distr == "Centralizada" {
 		fmt.Println("Envia Propuesta de distribucion para el libro: " + nombreLibro)
 		Distribucion := EnviaPropuestaCentralizada(conn, s.ChunksTemporal[nombreLibro], nombreLibro)
-		fmt.Println("Envia Chunks")
+		fmt.Println("Guarda y envia Chunks a otros DataNode")
 		ReparteChunks(conns, nombreLibro, Distribucion)
 		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		ok := EnviaDistribucionCentralizada(conn, Distribucion)

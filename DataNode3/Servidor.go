@@ -44,7 +44,7 @@ func GuardaChunk(in *connection.Chunk) {
 	// write/save buffer to disk
 	ioutil.WriteFile(fileName, in.Chunk, os.ModeAppend)
 
-	fmt.Println("Descarga Chunk recibido por DataNode : ", fileName)
+	fmt.Println("Guarda Chunk: ", fileName)
 
 }
 
@@ -59,7 +59,7 @@ func GuardaTemporal(ch *connection.Chunk) string {
 
 //EnviaChunkCliente recibe chunks del cliente
 func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
-	fmt.Println("Cliente envia Chunk")
+	fmt.Println("Recibe Chunk enviado por Cliente")
 	final := GuardaTemporal(in)
 
 	if final == "Final" {
@@ -67,7 +67,6 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 		go Cliente(in.NombreLibro, s.distr)
 	}
 
-	fmt.Println("DataNode envia respuesta a cliente")
 	return &connection.Message{Message: "Descargada\n"}, nil
 }
 
@@ -75,7 +74,7 @@ func (s *Server) EnviaChunkCliente(ctx context.Context, in *connection.Chunk) (*
 func (s *Server) EnviaChunkDataNode(ctx context.Context, in *connection.Chunk) (*connection.Message, error) {
 	fmt.Println("Se guarda chunks en local")
 	GuardaChunk(in)
-	return &connection.Message{Message: "Guardado"}, nil
+	return &connection.Message{Message: "Recibido\n"}, nil
 }
 
 //ConsultaUbicacionArchivo consulta ubicacion al namenode de los chunks en los datanodes
@@ -143,9 +142,9 @@ func (s *Server) ChequeoPing(ctx context.Context, in *connection.Message) (*conn
 
 //ConsultaUsoLog chequea que un nodo no este caido
 func (s *Server) ConsultaUsoLog(ctx context.Context, in *connection.Message) (*connection.Message, error) {
-	fmt.Println("Se consulta por el uso del log: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 	MSTP, _ := time.Parse(in.Message, "02/01/2006 03:04:05.000000 PM")
 	timeSTP, _ := time.Parse(s.timestamp, "02/01/2006 03:04:05.000000 PM")
+	fmt.Println("Otro DataNode consulta por el uso del log: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 	for s.timestamp != "" && timeSTP.Before(MSTP) {
 		//wg.Wait()
 		time.Sleep(500 * time.Millisecond)
