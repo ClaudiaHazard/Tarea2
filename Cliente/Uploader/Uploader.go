@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
@@ -128,10 +129,10 @@ func main() {
 	for i := 0; i < len(toread); i++ {
 		wg.Add(1)
 		go CreaChunks(toread[i], connDN1, connDN2, connDN3)
-		//if i%3 == 0 && i != 0 {
-		//	fmt.Println("Espera 10 segundos para botar un DataNode en caso de que se quiera probar")
-		//	time.Sleep(10000 * time.Millisecond)
-		//}
+		if i%12 == 0 && i != 0 {
+			fmt.Println("Espera 10 segundos para botar o activar un DataNode en caso de que se quiera probar")
+			time.Sleep(10000 * time.Millisecond)
+		}
 	}
 	wg.Wait()
 }
