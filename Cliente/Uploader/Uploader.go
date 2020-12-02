@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
@@ -12,8 +13,8 @@ import (
 	"math"
 	"math/rand"
 	"os"
-	"sync"
 	"strconv"
+	"sync"
 	//"bufio"
 )
 
@@ -35,8 +36,35 @@ func HaceChunk(ch []byte, pos int32, n string, t int32) *connection.Chunk {
 //CreaChunks crea chunks de un libro.
 func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, conn3 *grpc.ClientConn) {
 
-	//elección de a donde enviar
-	seed := rand.Intn(3)
+	work := false
+
+	seed := 0
+
+	xcon, _ := grpc.Dial("")
+	c := connection.NewMensajeriaServiceClient(xcon)
+
+	for work != true {
+		//elección de a donde enviar
+		seed = rand.Intn(3)
+
+		if seed == 0 {
+			c = connection.NewMensajeriaServiceClient(conn1)
+		}
+		if seed == 1 {
+			c = connection.NewMensajeriaServiceClient(conn2)
+		}
+		if seed == 2 {
+			c = connection.NewMensajeriaServiceClient(conn3)
+		}
+
+		_, err := c.ChequeoPing(context.Background(), &connection.Message{Message: "Disponible?"})
+
+		if err != nil {
+			fmt.Println("Error de conexion con el DataNode" + strconv.Itoa(int(seed+1)) + ", puede que este caido")
+			work = false
+		}
+	}
+
 	file, err := os.Open(name)
 	if err != nil {
 		fmt.Println(err)
@@ -49,44 +77,23 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 	// num de partes en que se dividirá
 	totalPartsNum := int32(math.Ceil(float64(fileSize) / float64(fileChunk)))
 	fmt.Printf("Splitting to %d pieces.\n", totalPartsNum)
-	c1 := connection.NewMensajeriaServiceClient(conn1)
-	c2 := connection.NewMensajeriaServiceClient(conn2)
-	c3 := connection.NewMensajeriaServiceClient(conn3)
+
 	for i := int32(0); i < totalPartsNum; i++ {
 		partSize := int(math.Min(fileChunk, float64(fileSize-int64(i*fileChunk))))
 		partBuffer := make([]byte, partSize)
 		file.Read(partBuffer)
 		ch := HaceChunk(partBuffer, i+1, name, totalPartsNum) //nombre con formato incluido
-		if seed == 0 {
-			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
-			response, err3 := c1.EnviaChunkCliente(context.Background(), ch)
-			if err3 != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			fmt.Println(response)
-			fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 
-		} else if seed == 1 {
-			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar))+ "de Libro: " + name)
-			response, err3 := c2.EnviaChunkCliente(context.Background(), ch)
-			if err3 != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			fmt.Println(response)
-			fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
+		fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
 
-		} else {
-			fmt.Println("Enviando chunk n° " + strconv.Itoa(int(i)) + "de " + strconv.Itoa(int(ch.NumeroPar)) + "de Libro: " + name)
-			response, err3 := c3.EnviaChunkCliente(context.Background(), ch)
-			if err3 != nil {
-				fmt.Println(err)
-				os.Exit(1)
-			}
-			fmt.Println(response)
-			fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
+		_, err := c.EnviaChunkCliente(context.Background(), ch)
+
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
 		}
+
+		fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 
 	}
 	fmt.Println(name, " terminó de enviarse")
@@ -121,6 +128,8 @@ func main() {
 	go CreaChunks(nas[0], connDN1, connDN2, connDN3)
 	wg.Add(1)
 	go CreaChunks(nas[1], connDN1, connDN2, connDN3)
+	fmt.Println("Espera 8 segundos para botar un DataNode en caso de que se quiera probar")
+	time.Sleep(8000 * time.Millisecond)
 	wg.Add(1)
 	go CreaChunks(nas[2], connDN1, connDN2, connDN3)
 	wg.Add(1)
