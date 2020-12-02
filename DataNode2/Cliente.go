@@ -210,6 +210,8 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []*connection
 		fmt.Println("Error al llamar EnviaPropuesta")
 	}
 
+	fmt.Println(response.Message)
+
 	if response.Message == "SI" {
 		return Distribucion
 	}
