@@ -87,7 +87,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
+		fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i + 1)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 	}
 	fmt.Println(name, " terminó de enviarse")
 	wg.Done()
