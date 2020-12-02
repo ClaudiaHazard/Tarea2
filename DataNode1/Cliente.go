@@ -340,17 +340,23 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 
 //ConsultaUsoLogDistribuido envia aviso para saber si se puede utilizar el log
 func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
-	c := connection.NewMensajeriaServiceClient(conn)
-	ctx := context.Background()
-	s.timestamp = time.Now().Format("02/01/2006 03:04:05.000000 PM")
+	var response *connection.Message
+	respuesta := ChequeaCaido(conn).Message
 
-	fmt.Println("Consulta por el log")
-	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
-	fmt.Println("Recibio respuesta del uso del log")
+	if respuesta == "Caido" {
+		response = &connection.Message{Message: "Ok"}
+	} else {
 
-	s.timestamp = ""
-	if err != nil {
-		log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
+		c := connection.NewMensajeriaServiceClient(conn)
+		ctx := context.Background()
+		s.timestamp = time.Now().Format("02/01/2006 03:04:05.000000 PM")
+		fmt.Println("Consulta por el log")
+		response, err = c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
+		fmt.Println("Recibio respuesta del uso del log")
+		s.timestamp = ""
+		if err != nil {
+			log.Fatalf("Error al llamar ConsultaUsoLog: %s", err)
+		}
 	}
 	defer wg.Done()
 	return response
