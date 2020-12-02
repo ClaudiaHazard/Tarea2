@@ -379,7 +379,12 @@ func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
 	} else {
 		//Agrega mensaje
 		mutex.Lock()
-		MensajesEnviadosTotal = MensajesEnviadosTotal + 2
+		MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+		mutex.Unlock()
+
+		//Agrega mensaje
+		mutex.Lock()
+		ChequeoCaidos = ChequeoCaidos + 1
 		mutex.Unlock()
 
 		c := connection.NewMensajeriaServiceClient(conn)

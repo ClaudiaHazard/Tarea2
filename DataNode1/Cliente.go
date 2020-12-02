@@ -385,7 +385,12 @@ func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
 
 		//Agrega mensaje
 		mutex.Lock()
-		MensajesEnviadosTotal = MensajesEnviadosTotal + 2
+		MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+		mutex.Unlock()
+
+		//Agrega mensaje
+		mutex.Lock()
+		ChequeoCaidos = ChequeoCaidos + 1
 		mutex.Unlock()
 
 		s.timestamp = time.Now().Format("02/01/2006 03:04:05.000000 PM")
