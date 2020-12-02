@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
@@ -15,15 +16,32 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	response, err := c.ChequeoPing(ctx, &connection.Message{Message: "Disponible?"})
+	res := make(chan string)
+	timeout := make(chan bool, 1)
 
-	if err != nil {
+	go func() {
+		response, err := c.ChequeoPing(ctx, &connection.Message{Message: "Disponible?"})
+		if err != nil {
+			fmt.Println("Error de conexion con el DataNode, puede que este caido")
+			res <- "Caido"
+		} else {
+			res <- response.Message
+		}
+	}()
+
+	go func() {
+		time.Sleep(2 * time.Second)
+		timeout <- true
+	}()
+
+	select {
+	case msg := <-res:
+		return &connection.Message{Message: msg}
+
+	case <-timeout:
 		fmt.Println("Error de conexion con el DataNode, puede que este caido")
 		return &connection.Message{Message: "Caido"}
 	}
-
-	print(response.Message)
-	return response
 }
 
 //ChequeaNodos chequea que el nodo no este caido
