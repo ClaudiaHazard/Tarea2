@@ -66,4 +66,5 @@ func main() {
 	}
 
 	fmt.Println("Hola")
+	wgInf.Wait()
 }

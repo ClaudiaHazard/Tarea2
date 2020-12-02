@@ -68,5 +68,5 @@ func main() {
 	if err3 != nil {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
-
+	wgInf.Wait()
 }

@@ -43,6 +43,7 @@ func TipoDistr() string {
 
 func main() {
 	s = Server{id: 1, ChunksTemporal: map[string][]*connection.Chunk{}, distr: TipoDistr(), timestamp: ""}
+
 	wgInf.Add(1)
 	go Servidor()
 
@@ -62,5 +63,5 @@ func main() {
 	if err3 != nil {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
-
+	wgInf.Wait()
 }
