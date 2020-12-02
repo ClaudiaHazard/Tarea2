@@ -23,6 +23,7 @@ const (
 )
 
 var wg2 sync.WaitGroup
+var wg3 sync.WaitGroup
 
 //CreaPropuesta crea propuesta de distribucion en los datanodes.
 func CreaPropuesta(Chunks []*connection.Chunk, Nodelist []int32) []int32 {
@@ -90,11 +91,11 @@ func EnviaDistribucionDistribuida(conns []*grpc.ClientConn, conn *grpc.ClientCon
 	wg.Add(1)
 	go ConsultaUsoLogDistribuido(conns[1])
 	wg.Wait()
-
-	wg.Add(1)
+	wg3.Wait()
+	wg3.Add(1)
 	fmt.Println("Escribe en el log")
 	response, err := c.EnviaDistribucion(ctx, Distribucion)
-	wg.Done()
+	wg3.Done()
 
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
