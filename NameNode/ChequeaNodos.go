@@ -12,6 +12,7 @@ import (
 
 //ChequeaCaido envia aviso para saber si los datanode estan disponibles
 func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
+	fmt.Println("Chequea Conexion")
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
@@ -32,6 +33,8 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 		time.Sleep(2 * time.Second)
 		timeout <- true
 	}()
+
+	fmt.Println("Envia respuesta")
 
 	select {
 	case msg := <-res:
