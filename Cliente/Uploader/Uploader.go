@@ -62,6 +62,8 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 		if err != nil {
 			fmt.Println("Error de conexion con el DataNode" + strconv.Itoa(int(seed+1)) + ", puede que este caido")
 			work = false
+		} else {
+			work = true
 		}
 	}
 
