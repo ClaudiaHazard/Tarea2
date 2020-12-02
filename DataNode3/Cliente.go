@@ -91,11 +91,11 @@ func EnviaDistribucionDistribuida(conns []*grpc.ClientConn, conn *grpc.ClientCon
 	wg.Add(1)
 	go ConsultaUsoLogDistribuido(conns[1])
 	wg.Wait()
-	wg3.Wait()
-	wg3.Add(1)
+
+	mutex.Lock()
 	fmt.Println("Escribe en el log")
 	response, err := c.EnviaDistribucion(ctx, Distribucion)
-	wg3.Done()
+	mutex.Unlock()
 
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaPropuesta: %s", err)
