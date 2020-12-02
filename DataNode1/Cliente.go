@@ -23,6 +23,7 @@ const (
 )
 
 var wg2 sync.WaitGroup
+var wg3 sync.WaitGroup
 
 //CreaPropuesta crea propuesta de distribucion en los datanodes.
 func CreaPropuesta(Chunks []*connection.Chunk, Nodelist []int32) []int32 {
@@ -92,10 +93,11 @@ func EnviaDistribucionDistribuida(conns []*grpc.ClientConn, conn *grpc.ClientCon
 	go ConsultaUsoLogDistribuido(conns[1])
 	wg.Wait()
 
-	wg.Add(1)
+	wg3.Wait()
+	wg3.Add(1)
 	fmt.Println("Escribe en el log")
 	response, err := c.EnviaDistribucion(ctx, Distribucion)
-	wg.Done()
+	wg3.Done()
 
 	if err != nil {
 		log.Fatalf("Error al llamar EnviaDistribucion: %s", err)
@@ -434,9 +436,9 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		tf := time.Now()
 		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + tf.Format("02/01/2006 03:04:05.000000 PM"))
 		mutex.Lock()
-		TiempoTotalEscribirLog = TiempoTotalEscribirLog + ti.Sub(tf)
+		TiempoTotalEscribirLog = TiempoTotalEscribirLog + tf.Sub(ti)
 		mutex.Unlock()
-		fmt.Println("Tiempo tomado en escribir en el log: ", ti.Sub(tf).Seconds())
+		fmt.Println("Tiempo tomado en escribir en el log: ", tf.Sub(ti).Seconds())
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
@@ -451,9 +453,9 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		tf := time.Now()
 		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + tf.Format("02/01/2006 03:04:05.000000 PM"))
 		mutex.Lock()
-		TiempoTotalEscribirLog = TiempoTotalEscribirLog + ti.Sub(tf)
+		TiempoTotalEscribirLog = TiempoTotalEscribirLog + tf.Sub(ti)
 		mutex.Unlock()
-		fmt.Println("Tiempo tomado en escribir en el log: ", ti.Sub(tf).Seconds())
+		fmt.Println("Tiempo tomado en escribir en el log: ", tf.Sub(ti).Seconds())
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}

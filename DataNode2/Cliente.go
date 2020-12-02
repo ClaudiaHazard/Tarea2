@@ -458,9 +458,9 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		tf := time.Now()
 		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + tf.Format("02/01/2006 03:04:05.000000 PM"))
 		mutex.Lock()
-		TiempoTotalEscribirLog = TiempoTotalEscribirLog + ti.Sub(tf)
+		TiempoTotalEscribirLog = TiempoTotalEscribirLog + tf.Sub(ti)
 		mutex.Unlock()
-		fmt.Println("Tiempo tomado en escribir en el log: ", ti.Sub(tf).Seconds())
+		fmt.Println("Tiempo tomado en escribir en el log: ", tf.Sub(ti).Seconds())
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
