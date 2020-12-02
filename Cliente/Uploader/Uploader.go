@@ -129,7 +129,7 @@ func main() {
 	for i := 0; i < len(toread); i++ {
 		wg.Add(1)
 		go CreaChunks(toread[i], connDN1, connDN2, connDN3)
-		if i%11 == 0 && i != 0 {
+		if (i%11 == 0 && i != 0) || (i%4 == 0 && i != 0) {
 			fmt.Println("Espera 10 segundos para botar o activar un DataNode en caso de que se quiera probar")
 			time.Sleep(10000 * time.Millisecond)
 		}
