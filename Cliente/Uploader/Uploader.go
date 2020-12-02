@@ -133,4 +133,5 @@ func main() {
 		//	time.Sleep(10000 * time.Millisecond)
 		//}
 	}
+	wg.Wait()
 }
