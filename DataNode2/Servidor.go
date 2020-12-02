@@ -175,4 +175,5 @@ func Servidor() {
 	if err := grpcServer.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve gRPC server over "+ipportListen+": %v", err)
 	}
+	wgInf.Done()
 }

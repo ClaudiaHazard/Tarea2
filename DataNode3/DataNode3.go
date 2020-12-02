@@ -10,6 +10,8 @@ import (
 )
 
 var wg sync.WaitGroup
+var wgInf sync.WaitGroup
+
 var s Server
 
 var connNN *grpc.ClientConn
@@ -43,6 +45,7 @@ func TipoDistr() string {
 func main() {
 	s = Server{id: 1, ChunksTemporal: map[string][]*connection.Chunk{}, distr: TipoDistr(), timestamp: ""}
 
+	wgInf.Add(1)
 	go Servidor()
 
 	//Se crean las conexiones con NameNode y los DataNodes

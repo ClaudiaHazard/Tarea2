@@ -10,6 +10,8 @@ import (
 )
 
 var wg sync.WaitGroup
+
+var wgInf sync.WaitGroup
 var s Server
 
 var connNN *grpc.ClientConn
@@ -47,6 +49,7 @@ func main() {
 	s.ipMaquinas[2] = ipportDataNode2
 	s.ipMaquinas[3] = ipportDataNode3
 
+	wgInf.Add(1)
 	go Servidor()
 
 	//Se crean las conexiones con NameNode y los DataNodes
