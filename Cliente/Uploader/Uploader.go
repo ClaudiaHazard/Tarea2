@@ -3,20 +3,19 @@ package main
 import (
 	"fmt"
 	"log"
-	"time"
-    "strings"
+	"strings"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 
+	"io/ioutil"
 	"math"
 	"math/rand"
 	"os"
 	"strconv"
 	"sync"
-    "io/ioutil"
 )
 
 var wg sync.WaitGroup
@@ -73,7 +72,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 	defer file.Close()
 	fileInfo, _ := file.Stat()
 	var fileSize int64 = fileInfo.Size()
-	const fileChunk = (1 * (1 << 20)) / 4 
+	const fileChunk = (1 * (1 << 20)) / 4
 	totalPartsNum := int32(math.Ceil(float64(fileSize) / float64(fileChunk)))
 	fmt.Println("El archivo" + name + "Tiene " + strconv.Itoa(int(totalPartsNum)) + " partes")
 	for i := int32(0); i < totalPartsNum; i++ {
@@ -87,7 +86,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 			fmt.Println(err)
 			os.Exit(1)
 		}
-		fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i + 1)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
+		fmt.Println("Enviado chunk n° " + strconv.Itoa(int(i+1)) + " de " + strconv.Itoa(int(ch.NumeroPar)))
 	}
 	fmt.Println(name, " terminó de enviarse")
 	wg.Done()
@@ -117,21 +116,21 @@ func main() {
 
 	files, err := ioutil.ReadDir("./")
 	if err != nil {
-	    fmt.Println("Error obteniendo archivos: ",err)
+		fmt.Println("Error obteniendo archivos: ", err)
 	}
 
 	var toread []string
 	for _, f := range files {
-		if ((f.IsDir()!=true) && (strings.Contains(f.Name(),".go")!=true) && (f.Name()!="Makefile")){	
-			toread=append(toread,f.Name())
-	    }
+		if (f.IsDir() != true) && (strings.Contains(f.Name(), ".go") != true) && (f.Name() != "Makefile") {
+			toread = append(toread, f.Name())
+		}
 	}
-	for i:=0;i<len(toread);i++ {
+	for i := 0; i < len(toread); i++ {
 		wg.Add(1)
 		go CreaChunks(toread[i], connDN1, connDN2, connDN3)
-	    if (i==1){
-			fmt.Println("Espera 10 segundos para botar un DataNode en caso de que se quiera probar")
-			time.Sleep(10000 * time.Millisecond)	    	
-		}
+		//if i%3 == 0 && i != 0 {
+		//	fmt.Println("Espera 10 segundos para botar un DataNode en caso de que se quiera probar")
+		//	time.Sleep(10000 * time.Millisecond)
+		//}
 	}
 }
