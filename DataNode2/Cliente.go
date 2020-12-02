@@ -325,8 +325,10 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 		response, err := c.ChequeoPing(ctx, &connection.Message{Message: "Disponible?"})
 		if err != nil {
 			fmt.Println("Error de conexion con el DataNode, puede que este caido")
+			res <- "error"
+		} else {
+			res <- response.Message
 		}
-		res <- response.Message
 	}()
 
 	select {
