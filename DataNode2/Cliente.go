@@ -303,15 +303,40 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
 
-	response, err := c.ChequeoPing(ctx, &connection.Message{Message: "Disponible?"})
+	//response, err := c.ChequeoPing(ctx, &connection.Message{Message: "Disponible?"})
 
-	if err != nil {
+	//if err != nil {
+	//	fmt.Println("Error de conexion con el DataNode, puede que este caido")
+	//	return &connection.Message{Message: "Caido"}
+	//}
+
+	//fmt.Println(response.Message)
+	//return response
+
+	res := make(chan string)
+	timeout := make(chan bool, 1)
+
+	go func() {
+		time.Sleep(2 * time.Second)
+		timeout <- true
+	}()
+
+	go func() {
+		response, err := c.ChequeoPing(ctx, &connection.Message{Message: "Disponible?"})
+		if err != nil {
+			fmt.Println("Error de conexion con el DataNode, puede que este caido")
+		}
+		res <- response.Message
+	}()
+
+	select {
+	case msg := <-res:
+		return &connection.Message{Message: msg}
+
+	case <-timeout:
 		fmt.Println("Error de conexion con el DataNode, puede que este caido")
 		return &connection.Message{Message: "Caido"}
 	}
-
-	fmt.Println(response.Message)
-	return response
 }
 
 //ConsultaUsoLogDistribuido envia aviso para saber si se puede utilizar el log
