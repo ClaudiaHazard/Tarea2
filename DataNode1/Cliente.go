@@ -472,4 +472,5 @@ func Cliente(nombreLibro string, distr string) {
 	EjecutaCliente(connNN, connDN2, connDN3, nombreLibro, distr)
 	fmt.Println("Mensajes enviados: ", MensajesEnviadosTotal)
 	fmt.Println("Tiempo total usado para escribir en log: ", TiempoTotalEscribirLog.Seconds())
+	fmt.Println("Chequeos enviados: ", ChequeoCaidos)
 }
