@@ -40,7 +40,7 @@ func CreaChunks(name string, conn1 *grpc.ClientConn, conn2 *grpc.ClientConn, con
 
 	seed := 0
 
-	xcon, _ := grpc.Dial("")
+	xcon, _ := grpc.Dial(":50052")
 	c := connection.NewMensajeriaServiceClient(xcon)
 
 	for work != true {
