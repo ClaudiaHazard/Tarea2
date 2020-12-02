@@ -47,6 +47,8 @@ func main() {
 	s.ipMaquinas[2] = ipportDataNode2
 	s.ipMaquinas[3] = ipportDataNode3
 
+	go Servidor()
+
 	//Se crean las conexiones con NameNode y los DataNodes
 	connNN, err = grpc.Dial(ipportNameNode, grpc.WithInsecure(), grpc.WithBlock())
 	connDN2, err2 = grpc.Dial(ipportDataNode2, grpc.WithInsecure(), grpc.WithBlock())
@@ -64,5 +66,4 @@ func main() {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
 
-	Servidor()
 }

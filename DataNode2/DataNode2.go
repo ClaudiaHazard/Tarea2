@@ -44,6 +44,8 @@ func TipoDistr() string {
 func main() {
 	s = Server{id: 1, ChunksTemporal: map[string][]*connection.Chunk{}, distr: TipoDistr(), timestamp: ""}
 
+	go Servidor()
+
 	//Se crean las conexiones con NameNode y los DataNodes
 	connNN, err = grpc.Dial(ipportNameNode, grpc.WithInsecure(), grpc.WithBlock())
 	connDN1, err2 = grpc.Dial(ipportDataNode1, grpc.WithInsecure(), grpc.WithBlock())
@@ -61,5 +63,4 @@ func main() {
 		log.Fatalf("No se pudo conectar: %s", err)
 	}
 
-	Servidor()
 }
