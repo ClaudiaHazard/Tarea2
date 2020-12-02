@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"sync"
+	"time"
 
 	connection "github.com/ClaudiaHazard/Tarea2/Connection"
 	"google.golang.org/grpc"
@@ -21,6 +22,14 @@ var connDN3 *grpc.ClientConn
 var err error
 var err2 error
 var err3 error
+
+//MensajesEnviadosTotal cantidad de mensajes totales enviados entre Nodo - Nodo y Nodo -NameNode
+var MensajesEnviadosTotal int
+
+//TiempoTotalEscribirLog cantidad de tiempo total utilizado para escribir en el log.
+var TiempoTotalEscribirLog time.Duration
+
+var mutex *sync.Mutex
 
 //TipoDistr para seleccionar el tipo de distribucion
 func TipoDistr() string {
@@ -48,6 +57,10 @@ func main() {
 	s.ipMaquinas[1] = ipportDataNode1
 	s.ipMaquinas[2] = ipportDataNode2
 	s.ipMaquinas[3] = ipportDataNode3
+
+	TiempoTotalEscribirLog = 0
+	mutex = &sync.Mutex{}
+	MensajesEnviadosTotal = 0
 
 	wgInf.Add(1)
 	go Servidor()

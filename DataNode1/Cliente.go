@@ -141,6 +141,11 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 	fmt.Println(l)
 	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
+	//Agrega mensaje
+	mutex.Lock()
+	MensajesEnviadosTotal = MensajesEnviadosTotal + 2
+	mutex.Unlock()
+
 	//Chequea que los otros 2 nodos acepten la propuesta
 	respuesta1 := ChequeaCaido(conns[0]).Message
 	//fmt.Println("Respuesta datanode: " + respuesta1)
@@ -157,6 +162,11 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 		fmt.Println(l)
 		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
+		//Agrega mensaje
+		mutex.Lock()
+		MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+		mutex.Unlock()
+
 		//Chequea que el otro nodo acepte la propuesta
 		respuesta1 = ChequeaCaido(conns[1]).Message
 
@@ -172,6 +182,11 @@ func EnviaPropuestaDistribuida(conns []*grpc.ClientConn, listaChunks []*connecti
 		fmt.Println("Propuesta")
 		fmt.Println(l)
 		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
+
+		//Agrega mensaje
+		mutex.Lock()
+		MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+		mutex.Unlock()
 
 		//Chequea que el otro nodo acepte la propuesta
 		respuesta1 = ChequeaCaido(conns[0]).Message
@@ -209,6 +224,11 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []*connection
 	fmt.Println(l)
 	Distribucion := &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
 
+	//Agrega mensaje
+	mutex.Lock()
+	MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+	mutex.Unlock()
+
 	response, err := c.EnviaPropuesta(ctx, Distribucion)
 
 	if err != nil {
@@ -240,6 +260,11 @@ func EnviaPropuestaCentralizada(conn *grpc.ClientConn, listaChunks []*connection
 		fmt.Println("Propuesta")
 		fmt.Println(l)
 		Distribucion = &connection.Distribucion{NombreLibro: nombreLibro, ListaDataNodesChunk: l, NumeroPar: int32(len(l))}
+
+		//Agrega mensaje
+		mutex.Lock()
+		MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+		mutex.Unlock()
 
 		response, err = c.EnviaPropuesta(ctx, Distribucion)
 
@@ -343,14 +368,25 @@ func ChequeaCaido(conn *grpc.ClientConn) *connection.Message {
 //ConsultaUsoLogDistribuido envia aviso para saber si se puede utilizar el log
 func ConsultaUsoLogDistribuido(conn *grpc.ClientConn) *connection.Message {
 	var response *connection.Message
+
 	respuesta := ChequeaCaido(conn).Message
 
 	if respuesta == "Caido" {
+		//Agrega mensaje
+		mutex.Lock()
+		MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+		mutex.Unlock()
 		response = &connection.Message{Message: "Ok"}
 	} else {
 
 		c := connection.NewMensajeriaServiceClient(conn)
 		ctx := context.Background()
+
+		//Agrega mensaje
+		mutex.Lock()
+		MensajesEnviadosTotal = MensajesEnviadosTotal + 2
+		mutex.Unlock()
+
 		s.timestamp = time.Now().Format("02/01/2006 03:04:05.000000 PM")
 		fmt.Println("Consulta para utilizar el log " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 		response, err = c.ConsultaUsoLog(ctx, &connection.Message{Message: s.timestamp})
@@ -369,6 +405,12 @@ func ConsultaUsoLogCentralizado(conn *grpc.ClientConn) *connection.Message {
 
 	c := connection.NewMensajeriaServiceClient(conn)
 	ctx := context.Background()
+
+	//Agrega mensaje
+	mutex.Lock()
+	MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+	mutex.Unlock()
+
 	fmt.Println("Consulta para utilizar el log " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
 	response, err := c.ConsultaUsoLog(ctx, &connection.Message{Message: "1"})
 	fmt.Println("Recibe respuesta para el uso del log " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
@@ -386,9 +428,15 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		Distribucion := EnviaPropuestaDistribuida(conns, s.ChunksTemporal[nombreLibro], nombreLibro)
 		fmt.Println("Guarda y envia Chunks a otros DataNode")
 		ReparteChunks(conns, nombreLibro, Distribucion)
-		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
+		ti := time.Now()
+		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + ti.Format("02/01/2006 03:04:05.000000 PM"))
 		ok := EnviaDistribucionDistribuida(conns, conn, Distribucion)
-		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
+		tf := time.Now()
+		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + tf.Format("02/01/2006 03:04:05.000000 PM"))
+		mutex.Lock()
+		TiempoTotalEscribirLog = TiempoTotalEscribirLog + ti.Sub(tf)
+		mutex.Unlock()
+		fmt.Println("Tiempo tomado en escribir en el log: ", ti.Sub(tf).Seconds())
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
@@ -397,9 +445,15 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 		Distribucion := EnviaPropuestaCentralizada(conn, s.ChunksTemporal[nombreLibro], nombreLibro)
 		fmt.Println("Guarda y envia Chunks a otros DataNode")
 		ReparteChunks(conns, nombreLibro, Distribucion)
-		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
+		ti := time.Now()
+		fmt.Println("Envia distribucion para el libro: " + nombreLibro + ", tiempo: " + ti.Format("02/01/2006 03:04:05.000000 PM"))
 		ok := EnviaDistribucionCentralizada(conn, Distribucion)
-		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + time.Now().Format("02/01/2006 03:04:05.000000 PM"))
+		tf := time.Now()
+		fmt.Println("Escribio distribucion del libro: " + nombreLibro + ", tiempo: " + tf.Format("02/01/2006 03:04:05.000000 PM"))
+		mutex.Lock()
+		TiempoTotalEscribirLog = TiempoTotalEscribirLog + ti.Sub(tf)
+		mutex.Unlock()
+		fmt.Println("Tiempo tomado en escribir en el log: ", ti.Sub(tf).Seconds())
 		delete(s.ChunksTemporal, nombreLibro)
 		return ok.Message
 	}
@@ -410,4 +464,6 @@ func EjecutaCliente(conn *grpc.ClientConn, connDN1 *grpc.ClientConn, connDN2 *gr
 func Cliente(nombreLibro string, distr string) {
 
 	EjecutaCliente(connNN, connDN2, connDN3, nombreLibro, distr)
+	fmt.Println("Mensajes enviados: ", MensajesEnviadosTotal)
+	fmt.Println("Tiempo total usado para escribir en log: ", TiempoTotalEscribirLog.Seconds())
 }

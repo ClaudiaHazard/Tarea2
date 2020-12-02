@@ -31,6 +31,11 @@ var err error
 var err2 error
 var err3 error
 
+//MensajesEnviadosTotal cantidad de mensajes totales enviados entre NameNode - Nodo
+var MensajesEnviadosTotal int
+
+var mutex *sync.Mutex
+
 //Server datos
 type Server struct {
 	id         int
@@ -114,16 +119,29 @@ func AceptaPropuesta(prop *connection.Distribucion) string {
 	p3 := false
 	for _, element := range l {
 		if element == 1 {
+			//Agrega mensaje
+			mutex.Lock()
+			MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+			mutex.Unlock()
+
 			if ChequeaNodos(connDN1) != "Caido" {
 				p1 = true
 			}
 		}
 		if element == 2 {
+			//Agrega mensaje
+			mutex.Lock()
+			MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+			mutex.Unlock()
 			if ChequeaNodos(connDN2) != "Caido" {
 				p2 = true
 			}
 		}
 		if element == 3 {
+			//Agrega mensaje
+			mutex.Lock()
+			MensajesEnviadosTotal = MensajesEnviadosTotal + 1
+			mutex.Unlock()
 			if ChequeaNodos(connDN3) != "Caido" {
 				p3 = true
 			}
@@ -174,6 +192,7 @@ func (s *Server) EnviaPropuesta(ctx context.Context, in *connection.Distribucion
 	fmt.Println("Recibe propuesta")
 	m := AceptaPropuesta(in)
 	fmt.Println("Respuesta a propuesta:" + m)
+	fmt.Println("Mensajes enviados: ", MensajesEnviadosTotal)
 	return &connection.Message{Message: m}, nil
 }
 
@@ -278,6 +297,10 @@ func openServer() {
 func main() {
 
 	wgInf.Add(1)
+
+	MensajesEnviadosTotal = 0
+	mutex = &sync.Mutex{}
+
 	go openServer()
 
 	//Se crean las conexiones con NameNode y los DataNodes
